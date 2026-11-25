@@ -538,7 +538,7 @@
                 <div class="relative aspect-[4/4.3] bg-gradient-to-b from-[#1c1912] to-obsidian flex items-center justify-center overflow-hidden">
                   <img
                     id="founderPhotoImg"
-                    src="image_7487d3.jpg"
+                    src="image_7487d3.jpg?v=2"
                     alt="Aaron Lee - Founder of Granted Capital Funding"
                     onerror="this.src='https://placehold.co/500x540/141418/D4AF37?text=Aaron+Lee%0AFounder+%26+CEO'"
                     class="w-full h-full object-cover object-top"
@@ -641,7 +641,7 @@
                 controls
                 playsinline
                 preload="metadata"
-                poster="image_7487d3.jpg"
+                poster="image_7487d3.jpg?v=2"
                 class="absolute inset-0 w-full h-full object-contain bg-black"
               >
                 <source id="introVideoSource" src="aron-about.mp4" type="video/mp4" />
@@ -1595,7 +1595,7 @@
     // ---------------------------------------------------------
     // 1. DEFAULT DATA & STATE (Persisted via localStorage)
     // ---------------------------------------------------------
-    const DEFAULT_FOUNDER_PHOTO = 'image_7487d3.jpg';
+    const DEFAULT_FOUNDER_PHOTO = 'image_7487d3.jpg?v=2';
     const DEFAULT_INTRO_VIDEO = 'aron-about.mp4';
 
     const DEFAULT_PROOF_ITEMS = [
@@ -1756,7 +1756,7 @@
       tiktok: 'https://www.tiktok.com/@guaranteedcapandcred'
     };
 
-    let founderPhoto = localStorage.getItem('gcf_founder_photo_v3') || DEFAULT_FOUNDER_PHOTO;
+    let founderPhoto = localStorage.getItem('gcf_founder_photo_v4') || DEFAULT_FOUNDER_PHOTO;
     let localVideoObjectUrl = null;
     let proofItems = JSON.parse(localStorage.getItem('gcf_proof_items_v5')) || [...DEFAULT_PROOF_ITEMS];
     let clientReviews = JSON.parse(localStorage.getItem('gcf_reviews_v2')) || [...DEFAULT_REVIEWS];
@@ -1924,7 +1924,7 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           founderPhoto = canvas.toDataURL('image/jpeg', 0.86);
-          localStorage.setItem('gcf_founder_photo_v3', founderPhoto);
+          localStorage.setItem('gcf_founder_photo_v4', founderPhoto);
           renderFounderPhoto();
         };
         img.src = e.target.result;
@@ -1934,7 +1934,7 @@
 
     function resetFounderPhoto() {
       founderPhoto = DEFAULT_FOUNDER_PHOTO;
-      localStorage.removeItem('gcf_founder_photo_v3');
+      localStorage.removeItem('gcf_founder_photo_v4');
       renderFounderPhoto();
     }
 
