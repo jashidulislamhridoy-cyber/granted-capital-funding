@@ -16,7 +16,7 @@ create table if not exists public.admin_users (
 alter table public.admin_users enable row level security;   -- no policies: not readable via the API
 
 insert into public.admin_users (email) values
-  ('YOUR_ADMIN_EMAIL@example.com')          -- <<< replace with the email you will log in with
+  ('jashidulislamhridoy@gmail.com')          -- admin login email
 on conflict (email) do nothing;
 
 create or replace function public.is_admin()
