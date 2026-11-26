@@ -2172,9 +2172,9 @@
       let factor = 1.0;
       if (credit < 680) factor = 0.35; else if (credit < 720) factor = 0.85; else if (credit < 760) factor = 1.05; else factor = 1.25;
       const ageBonus = 1 + (llcAge * 0.05);
-      const estMid = Math.round((desired * factor * ageBonus) / 5000) * 5000;
-      const lowRange = Math.max(15000, Math.round((estMid * 0.85) / 5000) * 5000);
+      const estMid = Math.min(250000, Math.round((desired * factor * ageBonus) / 5000) * 5000);
       const highRange = Math.min(250000, Math.round((estMid * 1.15) / 5000) * 5000);
+      const lowRange = Math.min(highRange, Math.max(15000, Math.round((estMid * 0.85) / 5000) * 5000));
       document.getElementById('calcApprovalRange').textContent = `$${lowRange.toLocaleString()} – $${highRange.toLocaleString()}`;
       document.getElementById('calcMonthlyMin').textContent = `$${Math.round(estMid * 0.015).toLocaleString()} / mo`;
       document.getElementById('calcInterestSaved').textContent = `$${Math.round(estMid * 0.22 * 1.5).toLocaleString()}+`;
