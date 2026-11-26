@@ -601,7 +601,6 @@
                 controls
                 playsinline
                 preload="metadata"
-                poster="image_7487d3.jpg?v=2"
                 src="aron-about.mp4"
                 class="absolute inset-0 w-full h-full object-contain bg-black"
               >
@@ -1975,8 +1974,10 @@
       const video = document.getElementById('introLocalVideoPlayer');
       if (video) {
         const vsrc = safeUrl(s.founder_video_url, DEFAULT_SETTINGS.founder_video_url);
-        const poster = safeUrl(s.founder_video_poster_url, '') || photo;
-        if (video.getAttribute('poster') !== poster) video.setAttribute('poster', poster);
+        // No poster unless one is set in admin, so the video shows its own first frame
+        const poster = safeUrl(s.founder_video_poster_url, '');
+        if (poster) { if (video.getAttribute('poster') !== poster) video.setAttribute('poster', poster); }
+        else if (video.hasAttribute('poster')) video.removeAttribute('poster');
         if (video.getAttribute('src') !== vsrc) { video.setAttribute('src', vsrc); video.load(); }
       }
       const logo = safeUrl(s.brand_logo_url, DEFAULT_SETTINGS.brand_logo_url);
