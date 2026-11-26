@@ -833,9 +833,9 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
+          <div class="lg:col-span-6 space-y-8">
           <!-- LEFT: Interactive Live 0% APR Funding Calculator -->
-          <div class="lg:col-span-6 p-6 sm:p-8 rounded-3xl bg-obsidian border border-gold/30 shadow-gold-sm space-y-7">
+          <div class="p-6 sm:p-8 rounded-3xl bg-obsidian border border-gold/30 shadow-gold-sm space-y-7">
             <div class="flex items-center justify-between border-b border-white/10 pb-4">
               <div>
                 <h3 class="font-cinzel font-bold text-lg text-white">0% APR Funding Calculator</h3>
@@ -914,8 +914,67 @@
             </div>
           </div>
 
+          <!-- Left: Click-to-Reveal In-Page Calendly Card (No giant white box by default) -->
+          <div class="p-6 sm:p-8 rounded-3xl bg-obsidian border border-gold/35 shadow-gold-sm space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-4">
+              <div>
+                <span class="text-[11px] font-mono uppercase tracking-wider text-gold">DIRECT CALENDAR ACCESS</span>
+                <h3 class="font-playfair text-2xl font-bold text-white mt-0.5">Book 1-on-1 Strategy Call</h3>
+              </div>
+              <button id="closeInlineCalendlyBtn" type="button" onclick="toggleInlineCalendly(false)" class="hidden px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-mono text-zinc-300 hover:text-white transition-colors">
+                ✕ Minimize
+              </button>
+            </div>
+
+            <!-- Dark Luxury Placeholder Card (Shown by Default) -->
+            <div id="calendlyTeaserCard" class="p-6 sm:p-7 rounded-2xl bg-slateCard border border-white/10 space-y-5">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-gold-gradient text-obsidian flex items-center justify-center font-cinzel font-extrabold text-lg shrink-0 shadow-gold-sm">
+                  30m
+                </div>
+                <div>
+                  <h4 class="font-playfair text-lg font-bold text-white">Executive Capital &amp; Credit Audit</h4>
+                  <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
+                    Meet directly with Aaron Lee’s advisory team to map out your $50K–$150K+ 0% APR funding stack or credit restoration roadmap.
+                  </p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+                <div class="p-3 rounded-xl bg-obsidian/80 border border-white/10 text-zinc-300">
+                  ✓ 100% Free Consultation
+                </div>
+                <div class="p-3 rounded-xl bg-obsidian/80 border border-white/10 text-zinc-300">
+                  ✓ Zero Hard Credit Pull
+                </div>
+              </div>
+
+              <div class="pt-1 flex flex-col sm:flex-row gap-3">
+                <button type="button" onclick="toggleInlineCalendly(true)" class="flex-1 py-3.5 px-5 rounded-xl bg-gold-gradient text-obsidian font-bold text-xs sm:text-sm shadow-gold-sm hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+                  <span>📅 Open Booking Calendar Here</span>
+                </button>
+                <a href="https://calendly.com/guaranteedcapitalandcredit" target="_blank" rel="noopener noreferrer" class="py-3.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-mono text-zinc-300 hover:text-gold-light text-center transition-colors">
+                  New Tab ↗
+                </a>
+              </div>
+            </div>
+
+            <!-- Inline Calendly Iframe Container (Revealed inside this card on button click) -->
+            <div id="inlineCalendlyBox" class="hidden rounded-2xl overflow-hidden border border-gold/40 bg-white h-[500px]">
+              <iframe
+                id="inlineCalendlyIframe"
+                data-src="https://calendly.com/guaranteedcapitalandcredit?hide_gdpr_banner=1"
+                title="Schedule Strategy Call with Aaron Lee"
+                class="w-full h-full border-0"
+              ></iframe>
+            </div>
+          </div>
+          </div>
+
+
+          <div class="lg:col-span-6 space-y-8">
           <!-- RIGHT: 4-Step Interactive Pre-Qualification Form -->
-          <div class="lg:col-span-6 p-6 sm:p-8 rounded-3xl bg-obsidian border border-white/15 shadow-2xl">
+          <div class="p-6 sm:p-8 rounded-3xl bg-obsidian border border-white/15 shadow-2xl">
             <div id="formContainer">
               <!-- Progress Bar Header -->
               <div class="mb-7">
@@ -1094,70 +1153,8 @@
             </div>
           </div>
 
-        </div>
-
-        <!-- =======================================================
-             IN-PAGE CALENDLY SCHEDULER & ENCRYPTED DOCUMENT VAULT
-        ======================================================= -->
-        <div class="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <!-- Left: Click-to-Reveal In-Page Calendly Card (No giant white box by default) -->
-          <div class="lg:col-span-6 p-6 sm:p-8 rounded-3xl bg-obsidian border border-gold/35 shadow-gold-sm space-y-5">
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-4">
-              <div>
-                <span class="text-[11px] font-mono uppercase tracking-wider text-gold">DIRECT CALENDAR ACCESS</span>
-                <h3 class="font-playfair text-2xl font-bold text-white mt-0.5">Book 1-on-1 Strategy Call</h3>
-              </div>
-              <button id="closeInlineCalendlyBtn" type="button" onclick="toggleInlineCalendly(false)" class="hidden px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-mono text-zinc-300 hover:text-white transition-colors">
-                ✕ Minimize
-              </button>
-            </div>
-
-            <!-- Dark Luxury Placeholder Card (Shown by Default) -->
-            <div id="calendlyTeaserCard" class="p-6 sm:p-7 rounded-2xl bg-slateCard border border-white/10 space-y-5">
-              <div class="flex items-start gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-gold-gradient text-obsidian flex items-center justify-center font-cinzel font-extrabold text-lg shrink-0 shadow-gold-sm">
-                  30m
-                </div>
-                <div>
-                  <h4 class="font-playfair text-lg font-bold text-white">Executive Capital &amp; Credit Audit</h4>
-                  <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
-                    Meet directly with Aaron Lee’s advisory team to map out your $50K–$150K+ 0% APR funding stack or credit restoration roadmap.
-                  </p>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-3 text-xs font-mono">
-                <div class="p-3 rounded-xl bg-obsidian/80 border border-white/10 text-zinc-300">
-                  ✓ 100% Free Consultation
-                </div>
-                <div class="p-3 rounded-xl bg-obsidian/80 border border-white/10 text-zinc-300">
-                  ✓ Zero Hard Credit Pull
-                </div>
-              </div>
-
-              <div class="pt-1 flex flex-col sm:flex-row gap-3">
-                <button type="button" onclick="toggleInlineCalendly(true)" class="flex-1 py-3.5 px-5 rounded-xl bg-gold-gradient text-obsidian font-bold text-xs sm:text-sm shadow-gold-sm hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
-                  <span>📅 Open Booking Calendar Here</span>
-                </button>
-                <a href="https://calendly.com/guaranteedcapitalandcredit" target="_blank" rel="noopener noreferrer" class="py-3.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-mono text-zinc-300 hover:text-gold-light text-center transition-colors">
-                  New Tab ↗
-                </a>
-              </div>
-            </div>
-
-            <!-- Inline Calendly Iframe Container (Revealed inside this card on button click) -->
-            <div id="inlineCalendlyBox" class="hidden rounded-2xl overflow-hidden border border-gold/40 bg-white h-[500px]">
-              <iframe
-                id="inlineCalendlyIframe"
-                data-src="https://calendly.com/guaranteedcapitalandcredit?hide_gdpr_banner=1"
-                title="Schedule Strategy Call with Aaron Lee"
-                class="w-full h-full border-0"
-              ></iframe>
-            </div>
-          </div>
-
           <!-- Right: Encrypted Secure Document Vault -->
-          <div class="lg:col-span-6 p-6 sm:p-8 rounded-3xl bg-obsidian border border-white/15 shadow-2xl space-y-5">
+          <div class="p-6 sm:p-8 rounded-3xl bg-obsidian border border-white/15 shadow-2xl space-y-5">
             <div class="space-y-2.5">
               <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-bold">
                 <span>🔒 256-BIT SSL ENCRYPTED VAULT</span>
@@ -1213,6 +1210,7 @@
                 </button>
               </div>
             </form>
+          </div>
           </div>
         </div>
       </div>
