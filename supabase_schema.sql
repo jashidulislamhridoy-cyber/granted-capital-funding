@@ -333,3 +333,11 @@ end $$;
 drop policy if exists "public insert lead" on public.leads;
 create policy "public insert lead" on public.leads for insert to anon, authenticated
   with check (status = 'New Lead' and notes is null and funded_amount is null);
+
+-- SEO / AEO settings (idempotent: never overwrites values the admin already changed)
+insert into public.site_settings (key, value) values
+  ('canonical_domain', ''),
+  ('og_image_url', ''),
+  ('seo_title', 'Granted Capital Funding | $50K–$150K+ at 0% APR | By Aaron Lee Enterprises'),
+  ('seo_description', 'Unlock $50,000 – $150,000+ in 0% APR Business Funding for 12–18 months with no collateral or tax returns. Founded by Aaron Lee (Aaron Lee Enterprises).')
+on conflict (key) do nothing;

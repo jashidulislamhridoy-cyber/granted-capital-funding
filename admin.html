@@ -517,6 +517,10 @@
 
     // ---------------- SETTINGS (shared by content + pixels) ----------------
     const CONTENT_FIELDS = [
+      ['canonical_domain', 'Custom domain, e.g. https://www.yourdomain.com (blank = GitHub URL)', 'text'],
+      ['seo_title', 'SEO page title (shown in Google)', 'text'],
+      ['seo_description', 'SEO meta description (about 150–160 characters)', 'area'],
+      ['og_image_url', 'Social share image URL (blank = logo)', 'text'],
       ['hero_badge', 'Hero badge', 'text'], ['contact_phone', 'Phone (display format)', 'text'],
       ['hero_headline_html', 'Hero headline (HTML allowed)', 'area'], ['contact_email', 'Contact email', 'text'],
       ['hero_subtitle_html', 'Hero subtitle (HTML allowed)', 'area'], ['calendly_url', 'Calendly booking URL', 'text'],

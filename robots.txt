@@ -1,0 +1,26 @@
+# Granted Capital Funding robots.txt
+User-agent: Googlebot
+Allow: /
+Disallow: /admin.html
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin.html
+
+User-agent: GPTBot
+Allow: /
+Disallow: /admin.html
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin.html
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin.html
+
+User-agent: *
+Allow: /
+Disallow: /admin.html
+
+Sitemap: https://jashidulislamhridoy-cyber.github.io/granted-capital-funding/sitemap.xml

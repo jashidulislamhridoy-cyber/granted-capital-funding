@@ -10,6 +10,12 @@
   <meta property="og:title" content="Granted Capital Funding | By Aaron Lee Enterprises" />
   <meta property="og:description" content="$50M+ Capital Placed Nationwide. Secure $50K–$150K+ at 0% APR for 12–18 months for your US LLC." />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Granted Capital Funding" />
+  <meta property="og:url" content="https://jashidulislamhridoy-cyber.github.io/granted-capital-funding/" />
+  <meta property="og:image" content="https://jashidulislamhridoy-cyber.github.io/granted-capital-funding/brand-logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://jashidulislamhridoy-cyber.github.io/granted-capital-funding/" />
   <link rel="icon" type="image/png" href="brand-logo.png" />
   <link rel="apple-touch-icon" href="brand-logo.png" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -1246,6 +1252,13 @@
   <!-- =========================================================
        FOOTER WITH CUSTOMIZABLE SOCIAL MEDIA LINKS & ADMIN EDIT MODE
   ========================================================= -->
+  <!-- AEO summary: plain-language facts for search engines and AI answer tools -->
+  <section id="aeo-summary" aria-labelledby="aeoTitle" class="max-w-4xl mx-auto px-6 py-10 text-sm leading-relaxed text-zinc-400">
+    <h2 id="aeoTitle" class="font-playfair text-lg font-bold text-white mb-3">About Granted Capital Funding</h2>
+    <p>Granted Capital Funding, by Aaron Lee Enterprises, helps US LLC owners and entrepreneurs access up to $50,000 to $150,000+ in 0% introductory APR business credit for 12 to 18 months. Funding is arranged through third-party bank underwriting; approval is not guaranteed.</p>
+    <p class="mt-3">Eligibility for the core program generally requires a personal credit score of 680+ and an active US LLC or corporation in good standing. Programs include 0% APR business funding, Credit Restoration (a credit services offering subject to the Credit Repair Organizations Act), and Credit to Keys mortgage-readiness guidance. Founder: Aaron Lee, Founder &amp; Chief Capital Strategist.</p>
+  </section>
+
   <footer class="bg-obsidian border-t border-white/10 py-14">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-10 border-b border-white/10">
@@ -1387,6 +1400,10 @@
   "hero_subtitle_html": "Scale your company, acquire luxury assets, or fuel cash flow with <strong class=\"text-white\">12–18 months of 0% interest capital<\/strong>. Zero collateral, zero tax returns, and zero upfront equity required.",
   "founder_bio_html": "Aaron Lee is the Founder &amp; Chief Capital Strategist of <strong class=\"text-white\">Granted Capital Funding<\/strong> (<em class=\"text-gold-light\">By Aaron Lee Enterprises<\/em>). He specializes in helping US entrepreneurs and active LLC owners secure <strong class=\"text-white\">$50,000 – $150,000+ in 0% APR corporate funding<\/strong> without collateral or tax returns, alongside <strong class=\"text-white\">Credit Restoration<\/strong> and <strong class=\"text-white\">Credit to Keys<\/strong> mortgage readiness.",
   "footer_disclosure_html": "<strong class=\"text-zinc-400\">CROA &amp; Regulatory Disclosure:<\/strong> Granted Capital Funding (by Aaron Lee Enterprises, formerly Guaranteed Capital &amp; Credit) operates as a credit services organization subject to the Credit Repair Organizations Act (CROA). You have the right to dispute inaccurate information in your credit report directly with consumer reporting agencies at no charge. Granted Capital Funding is not a direct bank or financial lender; all 0% APR corporate funding ($50,000–$150,000+ for 12–18 months) is subject to third-party bank underwriting, personal credit profile (680+ FICO), and active US LLC standing. <strong class=\"text-zinc-400\">Affiliate Disclosure:<\/strong> Granted Capital Funding may earn a commission when you sign up for MyScoreIQ through our links, at no additional cost to you.",
+  "canonical_domain": "",
+  "og_image_url": "",
+  "seo_title": "Granted Capital Funding | $50K–$150K+ at 0% APR | By Aaron Lee Enterprises",
+  "seo_description": "Unlock $50,000 – $150,000+ in 0% APR Business Funding for 12–18 months with no collateral or tax returns. Founded by Aaron Lee (Aaron Lee Enterprises).",
   "contact_phone": "+1 (210) 774-1154",
   "contact_email": "aaronleeenterprises@gmail.com",
   "calendly_url": "https://calendly.com/guaranteedcapitalandcredit",
@@ -1878,6 +1895,80 @@
 
     function setHtml(id, html) { const el = document.getElementById(id); if (el && html) el.innerHTML = html; }
 
+    // ---------------- SEO / AEO: canonical, social tags, JSON-LD ----------------
+    const GH_ORIGIN = 'https://jashidulislamhridoy-cyber.github.io/granted-capital-funding/';
+    function plainText(html) {
+      const d = document.createElement('div');
+      d.innerHTML = html || '';
+      return (d.textContent || '').replace(/\s+/g, ' ').trim();
+    }
+    function upsertMeta(attr, name, content) {
+      if (!content) return;
+      let el = document.querySelector(`meta[${attr}="${name}"]`);
+      if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el); }
+      el.setAttribute('content', content);
+    }
+    function applySeo() {
+      const s = settings;
+      // Canonical base: your custom .com once set in admin, otherwise the GitHub Pages URL
+      const base = (s.canonical_domain || '').trim().replace(/\/+$/, '') || GH_ORIGIN.replace(/\/+$/, '');
+      const canonical = base + '/';
+      const title = (s.seo_title || '').trim();
+      const desc = (s.seo_description || '').trim();
+      const image = new URL((s.og_image_url || '').trim() || 'brand-logo.png', canonical).href;
+
+      if (title) { document.title = title; upsertMeta('property', 'og:title', title); }
+      if (desc) { upsertMeta('name', 'description', desc); upsertMeta('property', 'og:description', desc); }
+      upsertMeta('property', 'og:url', canonical);
+      upsertMeta('property', 'og:image', image);
+      const link = document.querySelector('link[rel="canonical"]');
+      if (link) link.setAttribute('href', canonical);
+      buildSchema(canonical, image, desc);
+    }
+
+    // JSON-LD: Organization/FinancialService, Person, WebSite, FAQPage and Reviews, all built from live content
+    function buildSchema(canonical, image, desc) {
+      const orgId = canonical + '#org', personId = canonical + '#aaron-lee';
+      const faqs = (faqItems || []).map(f => ({
+        '@type': 'Question', name: plainText(f.question),
+        acceptedAnswer: { '@type': 'Answer', text: plainText(f.answer_html) }
+      })).filter(q => q.name && q.acceptedAnswer.text);
+
+      const reviews = (clientReviews || []).filter(r => r.text).map(r => ({
+        '@type': 'Review',
+        author: { '@type': 'Person', name: r.name || 'Client' },
+        reviewRating: { '@type': 'Rating', ratingValue: Math.max(1, Math.min(5, Number(r.stars) || 5)), bestRating: 5, worstRating: 1 },
+        reviewBody: plainText(r.text)
+      }));
+      const avg = reviews.length ? reviews.reduce((a, r) => a + r.reviewRating.ratingValue, 0) / reviews.length : 0;
+      const phoneDigits = (settings.contact_phone || '').replace(/\D/g, '');
+
+      const org = {
+        '@type': ['FinancialService', 'Organization'], '@id': orgId,
+        name: 'Granted Capital Funding', alternateName: 'Granted Capital Funding by Aaron Lee Enterprises',
+        description: desc || undefined, url: canonical, logo: image, image,
+        telephone: phoneDigits ? '+' + phoneDigits : undefined,
+        email: settings.contact_email || undefined,
+        founder: { '@id': personId }, areaServed: { '@type': 'Country', name: 'United States' },
+        sameAs: [settings.social_youtube, settings.social_instagram, settings.social_facebook].filter(Boolean)
+      };
+      if (reviews.length) {
+        org.aggregateRating = { '@type': 'AggregateRating', ratingValue: avg.toFixed(1), reviewCount: reviews.length, bestRating: 5, worstRating: 1 };
+        org.review = reviews;
+      }
+      const graph = [
+        org,
+        { '@type': 'Person', '@id': personId, name: 'Aaron Lee', jobTitle: 'Founder & Chief Capital Strategist',
+          worksFor: { '@id': orgId }, url: canonical, image: new URL(settings.founder_photo_url || 'image_7487d3.jpg', canonical).href },
+        { '@type': 'WebSite', name: 'Granted Capital Funding', url: canonical, publisher: { '@id': orgId } }
+      ];
+      if (faqs.length) graph.push({ '@type': 'FAQPage', '@id': canonical + '#faq', mainEntity: faqs });
+
+      let el = document.getElementById('ld-json');
+      if (!el) { el = document.createElement('script'); el.type = 'application/ld+json'; el.id = 'ld-json'; document.head.appendChild(el); }
+      el.textContent = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
+    }
+
     function applySettings() {
       const s = settings;
       const badge = document.getElementById('heroBadge');
@@ -1960,6 +2051,7 @@
       renderReviews();
       renderFaqs();
       applySettings();   // after FAQs so the affiliate link inside FAQ #5 is updated too
+      applySeo();        // canonical, social tags and JSON-LD synced with live FAQs and reviews
     }
 
     // =====================================================================
