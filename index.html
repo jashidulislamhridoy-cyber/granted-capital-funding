@@ -2175,7 +2175,9 @@
       const estMid = Math.min(250000, Math.round((desired * factor * ageBonus) / 5000) * 5000);
       const highRange = Math.min(250000, Math.round((estMid * 1.15) / 5000) * 5000);
       const lowRange = Math.min(highRange, Math.max(15000, Math.round((estMid * 0.85) / 5000) * 5000));
-      document.getElementById('calcApprovalRange').textContent = `$${lowRange.toLocaleString()} – $${highRange.toLocaleString()}`;
+      document.getElementById('calcApprovalRange').textContent = lowRange === highRange
+        ? `$${highRange.toLocaleString()}`
+        : `$${lowRange.toLocaleString()} – $${highRange.toLocaleString()}`;
       document.getElementById('calcMonthlyMin').textContent = `$${Math.round(estMid * 0.015).toLocaleString()} / mo`;
       document.getElementById('calcInterestSaved').textContent = `$${Math.round(estMid * 0.22 * 1.5).toLocaleString()}+`;
       const noteEl = document.getElementById('calcEligibilityNote');
@@ -2380,8 +2382,6 @@
     // 12. START
     // =====================================================================
     window.addEventListener('DOMContentLoaded', async () => {
-      const yearEl = document.getElementById('currentYear');
-      if (yearEl) yearEl.textContent = new Date().getFullYear();
       initTiltCard();
       renderAll();            // instant render from built-in defaults
       updateCalculator();
