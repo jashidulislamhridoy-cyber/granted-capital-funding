@@ -105,6 +105,27 @@
           </div>
         </div>
         <div id="kpis" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3"></div>
+
+        <div class="card p-5 border-gold/30 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h3 class="font-playfair text-xl font-bold">Ad Spend &amp; ROI</h3>
+            <div class="flex items-center gap-2 text-xs">
+              <label for="feePct" class="text-zinc-400">Your fee (% of capital funded)</label>
+              <input id="feePct" type="number" min="0" max="100" step="0.1" class="inp !w-24 !py-1.5" placeholder="e.g. 10" />
+              <button class="btn-ghost !py-1.5" onclick="saveFee()">Save</button>
+            </div>
+          </div>
+          <div id="roiKpis" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3"></div>
+          <form id="spendForm" class="grid grid-cols-2 md:grid-cols-5 gap-3 items-end">
+            <div><label class="lbl" for="spDate">Date</label><input id="spDate" type="date" required class="inp" /></div>
+            <div><label class="lbl" for="spPlatform">Platform</label><select id="spPlatform" class="inp"><option>Facebook</option><option>Google</option><option>TikTok</option><option>Other</option></select></div>
+            <div><label class="lbl" for="spAmount">Amount spent ($)</label><input id="spAmount" type="number" min="0" step="0.01" required class="inp" placeholder="250.00" /></div>
+            <div><label class="lbl" for="spNotes">Notes</label><input id="spNotes" class="inp" placeholder="Campaign / ad set" /></div>
+            <button type="submit" class="btn-gold bg-gold-gradient h-[42px]">+ Log Spend</button>
+          </form>
+          <div id="spendLog" class="overflow-x-auto max-h-72 overflow-y-auto"></div>
+          <p class="text-[11px] text-zinc-500 font-mono">CPL = spend ÷ leads. Booked calls = leads moved to Call Booked or later. Net ROI = (capital funded × your fee % − spend) ÷ spend. Capital funded is the client's money, not your revenue, so ROI needs the fee % set.</p>
+        </div>
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <div class="card p-5"><h3 class="font-playfair text-lg font-bold mb-3">Leads by Ad Source</h3><div id="bySource" class="overflow-x-auto"></div></div>
           <div class="card p-5"><h3 class="font-playfair text-lg font-bold mb-3">Leads by Program</h3><div id="byProgram" class="overflow-x-auto"></div></div>
@@ -125,14 +146,15 @@
             <button class="btn-gold bg-gold-gradient" onclick="exportCsv()">⬇ Export Leads to CSV</button>
           </div>
         </div>
-        <div class="card p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div class="card p-4 grid grid-cols-1 md:grid-cols-5 gap-3">
           <input id="fSearch" class="inp" placeholder="Search name, email, phone, business…" />
           <select id="fSource" class="inp"><option value="">All forms</option><option value="prequal">Pre-Qualification</option><option value="checklist">Checklist opt-in</option><option value="vault">Document Vault</option></select>
           <select id="fStatus" class="inp"><option value="">All statuses</option></select>
           <select id="fProgram" class="inp"><option value="">All programs</option></select>
+          <select id="fTier" class="inp"><option value="">All priority tracks</option><option>Tier-1 Priority</option><option>Credit Restoration / Keys Track</option><option>LLC Setup Needed</option><option>Checklist Opt-in</option></select>
         </div>
-        <div class="card overflow-x-auto"><table class="t w-full min-w-[1050px]"><thead><tr>
-          <th>Date</th><th>Contact</th><th>Business</th><th>Program / Tier / Target</th><th>Form</th><th>Ad Source</th><th>Document</th><th>Status</th>
+        <div class="card overflow-x-auto"><table class="t w-full min-w-[1300px]"><thead><tr>
+          <th>Date</th><th>Contact</th><th>Business</th><th>Program / FICO / Target</th><th>Priority</th><th>Form</th><th>Ad Source</th><th>Document</th><th>Status</th><th>Funded ($)</th>
         </tr></thead><tbody id="leadRows"></tbody></table></div>
         <p id="leadCount" class="text-xs text-zinc-500 font-mono"></p>
       </section>
@@ -203,6 +225,25 @@
           </div>
         </div>
         <div id="pixelForm" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        <div class="card p-5 border-gold/30 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="font-playfair text-xl font-bold">Meta Conversions API (server-side)</h3>
+              <p class="text-xs text-zinc-400 mt-1">Stored in an admin-only table and used only by the <span class="font-mono">meta-capi</span> server function — never sent to visitors' browsers.</p>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn-ghost" onclick="testCapi()">⚡ Test Fire Server CAPI Event</button>
+              <button class="btn-gold bg-gold-gradient" onclick="saveCapi()">Save CAPI Settings</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="lbl" for="capiToken">CAPI access token <span class="badge ml-2" id="capiTokenBadge"></span></label>
+              <input id="capiToken" type="password" autocomplete="off" class="inp font-mono !text-xs" placeholder="Paste from Events Manager › Settings › Conversions API" /></div>
+            <div><label class="lbl" for="capiTest">Test event code <span class="badge ml-2" id="capiTestBadge"></span></label>
+              <input id="capiTest" class="inp font-mono" placeholder="TEST12345 — clear it when testing is done" /></div>
+          </div>
+          <div id="capiResult" class="text-xs font-mono text-zinc-400"></div>
+        </div>
         <div class="card p-5 space-y-2">
           <h3 class="font-playfair text-lg font-bold">Events fired automatically</h3>
           <div class="text-xs text-zinc-400 leading-relaxed font-mono">
@@ -253,6 +294,7 @@
       $('loginView').classList.add('hidden');
       $('appView').classList.remove('hidden');
       await loadSettings();
+      await loadPrivate();
       loadOverview();
     }
     function showLoginError(m) { const e = $('loginError'); e.textContent = m; e.classList.remove('hidden'); }
@@ -276,7 +318,7 @@
       const tab = b.dataset.tab; $('tab-' + tab).classList.remove('hidden');
       if (tab === 'leads' && !loaded.leads) { loaded.leads = 1; loadLeads(); }
       if (tab === 'content' && !loaded.content) { loaded.content = 1; renderSettingsForm(); loadLists(); }
-      if (tab === 'pixels' && !loaded.pixels) { loaded.pixels = 1; renderPixelForm(); loadTestLog(); }
+      if (tab === 'pixels' && !loaded.pixels) { loaded.pixels = 1; renderPixelForm(); renderCapi(); loadTestLog(); }
     }));
 
     // ---------------- DATA HELPERS ----------------
@@ -314,8 +356,10 @@
         const [views, events, leads] = await Promise.all([
           fetchAll(() => sb.from('analytics_events').select('session_id,utm_source').eq('event_name', 'PageView').gte('created_at', since)),
           fetchAll(() => sb.from('analytics_events').select('event_name,metadata').in('event_name', ['Schedule', 'AffiliateClick', 'Contact']).gte('created_at', since)),
-          fetchAll(() => sb.from('leads').select('source,program,utm_source,utm_campaign,status').gte('created_at', since))
+          fetchAll(() => sb.from('leads').select('source,program,utm_source,utm_campaign,status,funded_amount,lead_tier').gte('created_at', since))
         ]);
+        const spend = await fetchAll(() => sb.from('ad_spend_logs').select('*').gte('spend_date', since.slice(0, 10)).order('spend_date', { ascending: false }));
+        renderRoi(leads, spend);
         const sessions = new Set(views.map(v => v.session_id).filter(Boolean));
         const booked = events.filter(e => e.event_name === 'Schedule' && e.metadata && e.metadata.booked).length;
         const calClicks = events.filter(e => e.event_name === 'Schedule' && !(e.metadata && e.metadata.booked)).length;
@@ -333,12 +377,14 @@
         $('kpis').innerHTML = k.map(([l, v, s]) => `<div class="card p-4 border-gold/25"><div class="text-[10px] font-mono uppercase tracking-wider text-zinc-400">${l}</div><div class="font-mono text-2xl font-extrabold text-gold-light mt-1">${v}</div><div class="text-[11px] text-zinc-500 mt-0.5">${s}</div></div>`).join('');
 
         const bySrc = {};
-        views.forEach(v => { const s = normSource(v.utm_source); (bySrc[s] = bySrc[s] || { v: new Set(), l: 0 }).v.add(v.session_id); });
-        leads.forEach(l => { const s = normSource(l.utm_source); (bySrc[s] = bySrc[s] || { v: new Set(), l: 0 }).l++; });
+        const srcObj = s => (bySrc[s] = bySrc[s] || { v: new Set(), l: 0, sp: 0 });
+        views.forEach(v => srcObj(normSource(v.utm_source)).v.add(v.session_id));
+        leads.forEach(l => srcObj(normSource(l.utm_source)).l++);
+        spend.forEach(r => srcObj(normSource(r.platform)).sp += Number(r.amount_spent) || 0);
         const order = ['Facebook', 'Google', 'TikTok', 'Direct'];
         const srcRows = Object.entries(bySrc).sort((a, b) => (order.indexOf(a[0]) + 1 || 99) - (order.indexOf(b[0]) + 1 || 99) || b[1].l - a[1].l)
-          .map(([s, o]) => [esc(s), o.v.size, `<b class="text-gold-light">${o.l}</b>`, pct(o.l, o.v.size)]);
-        $('bySource').innerHTML = table(['Source', 'Visitors', 'Leads', 'Conv. %'], srcRows);
+          .map(([s, o]) => [esc(s), o.v.size, `<b class="text-gold-light">${o.l}</b>`, pct(o.l, o.v.size), o.sp ? money(o.sp) : '—', o.sp && o.l ? money(o.sp / o.l) : '—']);
+        $('bySource').innerHTML = table(['Source', 'Visitors', 'Leads', 'Conv. %', 'Spend', 'CPL'], srcRows);
 
         const byProg = {};
         leads.forEach(l => { const p = l.program || '—'; (byProg[p] = byProg[p] || { n: 0, f: 0 }).n++; if (l.status === 'Funded') byProg[p].f++; });
@@ -350,22 +396,74 @@
       } catch (e) { $('kpis').innerHTML = `<p class="text-xs text-rose-400 font-mono col-span-full">Could not load analytics: ${esc(e.message)}</p>`; }
     }
 
+    // ---------------- AD SPEND & ROI ----------------
+    const money = n => '$' + (Number(n) || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: n < 100 ? 2 : 0 });
+    const BOOKED = new Set(['Call Booked', 'In Review', 'Approved', 'Funded']);
+    let PRIVATE = {};
+    async function loadPrivate() {
+      const { data, error } = await sb.from('private_settings').select('key,value');
+      if (error) { toast(error.message, false); return; }
+      PRIVATE = Object.fromEntries(data.map(r => [r.key, r.value]));
+      $('feePct').value = PRIVATE.fee_percent || '';
+    }
+    async function savePrivate(pairs) {
+      const rows = Object.entries(pairs).map(([key, value]) => ({ key, value: String(value).trim(), updated_at: new Date().toISOString() }));
+      const { error } = await sb.from('private_settings').upsert(rows, { onConflict: 'key' });
+      if (error) { toast(error.message, false); return false; }
+      rows.forEach(r => PRIVATE[r.key] = r.value);
+      return true;
+    }
+    async function saveFee() { if (await savePrivate({ fee_percent: $('feePct').value })) { toast('Fee saved'); loadOverview(); } }
+    function renderRoi(leads, spend) {
+      const total = spend.reduce((a, r) => a + (Number(r.amount_spent) || 0), 0);
+      const booked = leads.filter(l => BOOKED.has(l.status)).length;
+      const funded = leads.reduce((a, l) => a + (Number(l.funded_amount) || 0), 0);
+      const fee = parseFloat(PRIVATE.fee_percent);
+      const revenue = isFinite(fee) ? funded * fee / 100 : null;
+      const roi = revenue !== null && total ? (revenue - total) / total * 100 : null;
+      const cards = [
+        ['Total Ad Spend', money(total), spend.length + ' entries'],
+        ['Cost Per Lead', leads.length && total ? money(total / leads.length) : '—', leads.length + ' leads'],
+        ['Cost Per Booked Call', booked && total ? money(total / booked) : '—', booked + ' booked calls'],
+        ['Capital Funded', money(funded), leads.filter(l => Number(l.funded_amount) > 0).length + ' funded clients'],
+        ['Your Revenue', revenue === null ? '—' : money(revenue), isFinite(fee) ? fee + '% fee' : 'set fee % above'],
+        ['Net ROI', roi === null ? '—' : (roi >= 0 ? '+' : '') + roi.toFixed(0) + '%', total ? (funded / total).toFixed(1) + '× capital per $1 spent' : 'log spend below']
+      ];
+      $('roiKpis').innerHTML = cards.map(([l, v, sub]) => `<div class="card p-4 bg-obsidian"><div class="text-[10px] font-mono uppercase tracking-wider text-zinc-400">${l}</div><div class="font-mono text-xl font-extrabold ${l === 'Net ROI' && roi !== null ? (roi >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-gold-light'} mt-1">${v}</div><div class="text-[11px] text-zinc-500 mt-0.5">${sub}</div></div>`).join('');
+      $('spendLog').innerHTML = table(['Date', 'Platform', 'Amount', 'Notes', ''], spend.map(r => [esc(r.spend_date), esc(r.platform), money(r.amount_spent), esc(r.notes), `<button class="text-xs text-rose-400 hover:underline" onclick="deleteSpend(${Number(r.id)})">Delete</button>`]));
+    }
+    $('spDate').value = new Date().toISOString().slice(0, 10);
+    $('spendForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const row = { spend_date: $('spDate').value, platform: $('spPlatform').value, amount_spent: Number($('spAmount').value), notes: $('spNotes').value.trim() || null };
+      const { error } = await sb.from('ad_spend_logs').insert(row);
+      if (error) return toast(error.message, false);
+      $('spAmount').value = ''; $('spNotes').value = '';
+      toast('Spend logged'); loadOverview();
+    });
+    async function deleteSpend(id) {
+      if (!confirm('Delete this spend entry?')) return;
+      const { error } = await sb.from('ad_spend_logs').delete().eq('id', id);
+      if (error) return toast(error.message, false);
+      toast('Deleted'); loadOverview();
+    }
+
     // ---------------- TAB 2: LEADS ----------------
     $('fStatus').innerHTML += STATUSES.map(s => `<option>${s}</option>`).join('');
-    ['fSearch', 'fSource', 'fStatus', 'fProgram'].forEach(id => $(id).addEventListener('input', renderLeads));
+    ['fSearch', 'fSource', 'fStatus', 'fProgram', 'fTier'].forEach(id => $(id).addEventListener('input', renderLeads));
     async function loadLeads() {
-      $('leadRows').innerHTML = '<tr><td colspan="8" class="text-zinc-500 font-mono">Loading…</td></tr>';
+      $('leadRows').innerHTML = '<tr><td colspan="10" class="text-zinc-500 font-mono">Loading…</td></tr>';
       try {
         LEADS = await fetchAll(() => sb.from('leads').select('*').order('created_at', { ascending: false }), 10000);
         const progs = [...new Set(LEADS.map(l => l.program).filter(Boolean))].sort();
         const cur = $('fProgram').value;
         $('fProgram').innerHTML = '<option value="">All programs</option>' + progs.map(p => `<option ${p === cur ? 'selected' : ''}>${esc(p)}</option>`).join('');
         renderLeads();
-      } catch (e) { $('leadRows').innerHTML = `<tr><td colspan="8" class="text-rose-400 font-mono">${esc(e.message)}</td></tr>`; }
+      } catch (e) { $('leadRows').innerHTML = `<tr><td colspan="10" class="text-rose-400 font-mono">${esc(e.message)}</td></tr>`; }
     }
     function filteredLeads() {
-      const q = $('fSearch').value.toLowerCase().trim(), src = $('fSource').value, st = $('fStatus').value, pr = $('fProgram').value;
-      return LEADS.filter(l => (!src || l.source === src) && (!st || l.status === st) && (!pr || l.program === pr) &&
+      const q = $('fSearch').value.toLowerCase().trim(), src = $('fSource').value, st = $('fStatus').value, pr = $('fProgram').value, tr = $('fTier').value;
+      return LEADS.filter(l => (!src || l.source === src) && (!st || l.status === st) && (!pr || l.program === pr) && (!tr || l.lead_tier === tr) &&
         (!q || [l.name, l.email, l.phone, l.business].some(v => (v || '').toLowerCase().includes(q))));
     }
     const FORM = { prequal: 'Pre-Qualification', checklist: 'Checklist', vault: 'Document Vault' };
@@ -377,17 +475,26 @@
         <td><div class="font-semibold">${esc(l.name)}</div><div class="text-xs text-zinc-400">${esc(l.email)}</div><div class="text-xs text-zinc-400">${esc(l.phone)}</div></td>
         <td>${esc(l.business)}<div class="text-xs text-zinc-500">${esc(l.llc_status)}</div></td>
         <td>${esc(l.program)}<div class="text-xs text-zinc-400">${esc(l.credit_tier)} ${l.target_amount ? '• ' + esc(l.target_amount) : ''}</div></td>
+        <td>${l.lead_tier ? `<span class="badge ${l.lead_tier === 'Tier-1 Priority' ? 'b-on' : l.lead_tier === 'Checklist Opt-in' ? 'b-off' : 'b-warn'}">${esc(l.lead_tier)}</span>` : '<span class="text-zinc-600">—</span>'}</td>
         <td><span class="badge b-off">${FORM[l.source] || esc(l.source)}</span></td>
         <td class="text-xs">${esc(normSource(l.utm_source))}<div class="text-zinc-500">${esc(l.utm_campaign)}</div>${l.fbclid ? '<div class="text-zinc-500">fbclid ✓</div>' : ''}${l.gclid ? '<div class="text-zinc-500">gclid ✓</div>' : ''}</td>
         <td>${l.document_path ? `<button class="btn-ghost !py-1 !px-2 text-xs" onclick="downloadDoc('${esc(l.id)}')">⬇ ${esc((l.document_name || 'file').slice(0, 22))}</button>` : '<span class="text-zinc-600">—</span>'}</td>
         <td><select class="inp !py-1.5 !text-xs" onchange="setStatus('${esc(l.id)}', this.value)">${STATUSES.map(s => `<option ${s === l.status ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
-      </tr>`).join('') : '<tr><td colspan="8" class="text-zinc-500 font-mono">No leads match.</td></tr>';
+        <td><input type="number" min="0" step="1000" class="inp !py-1.5 !text-xs !w-32" value="${l.funded_amount ?? ''}" placeholder="0" onchange="setFunded('${esc(l.id)}', this.value)" /></td>
+      </tr>`).join('') : '<tr><td colspan="10" class="text-zinc-500 font-mono">No leads match.</td></tr>';
     }
     async function setStatus(id, status) {
       const { error } = await sb.from('leads').update({ status }).eq('id', id);
       if (error) return toast(error.message, false);
       const l = LEADS.find(x => x.id === id); if (l) l.status = status;
       toast('Status updated: ' + status);
+    }
+    async function setFunded(id, value) {
+      const v = value === '' ? null : Math.max(0, Number(value));
+      const { error } = await sb.from('leads').update({ funded_amount: v }).eq('id', id);
+      if (error) return toast(error.message, false);
+      const l = LEADS.find(x => x.id === id); if (l) l.funded_amount = v;
+      toast(v === null ? 'Funded amount cleared' : 'Funded amount saved: ' + money(v));
     }
     async function downloadDoc(id) {
       const l = LEADS.find(x => x.id === id); if (!l) return;
@@ -397,7 +504,7 @@
     }
     function exportCsv() {
       const rows = filteredLeads();
-      const cols = ['created_at', 'status', 'source', 'name', 'email', 'phone', 'business', 'program', 'credit_tier', 'llc_status', 'target_amount',
+      const cols = ['created_at', 'status', 'lead_tier', 'funded_amount', 'source', 'name', 'email', 'phone', 'business', 'program', 'credit_tier', 'llc_status', 'target_amount',
         'document_name', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'fbclid', 'gclid', 'landing_page', 'referrer'];
       const cell = v => { let s = v === null || v === undefined ? '' : String(v); if (/^[=+\-@]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
       const csv = [cols.join(','), ...rows.map(r => cols.map(c => cell(r[c])).join(','))].join('\r\n');
@@ -559,6 +666,39 @@
         if (error) throw error;
         toast('Photo updated'); loadLists();
       } catch (e) { toast(e.message, false); }
+    }
+
+    // ---------------- TAB 4: META CAPI ----------------
+    function paintCapiBadges() {
+      const tok = $('capiToken').value.trim(), code = $('capiTest').value.trim();
+      $('capiTokenBadge').className = 'badge ml-2 ' + (tok ? (tok.length > 40 ? 'b-on' : 'b-warn') : 'b-off');
+      $('capiTokenBadge').textContent = tok ? (tok.length > 40 ? '● Active' : '! Check token') : '○ Inactive';
+      $('capiTestBadge').className = 'badge ml-2 ' + (code ? 'b-warn' : 'b-off');
+      $('capiTestBadge').textContent = code ? '● Test mode ON' : '○ Live mode';
+    }
+    function renderCapi() {
+      $('capiToken').value = PRIVATE.meta_capi_token || '';
+      $('capiTest').value = PRIVATE.meta_test_event_code || '';
+      ['capiToken', 'capiTest'].forEach(id => $(id).addEventListener('input', paintCapiBadges));
+      paintCapiBadges();
+    }
+    async function saveCapi() {
+      if (await savePrivate({ meta_capi_token: $('capiToken').value, meta_test_event_code: $('capiTest').value })) {
+        paintCapiBadges();
+        toast($('capiTest').value.trim() ? 'Saved — server events go to Test Events until you clear the test code' : 'Saved — server events are LIVE');
+      }
+    }
+    async function testCapi() {
+      $('capiResult').textContent = 'Sending test event…';
+      try {
+        const r = await fetch(CFG.SUPABASE_URL.replace(/\/$/, '') + '/functions/v1/meta-capi', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CFG.SUPABASE_ANON_KEY }, body: JSON.stringify({ test: true })
+        });
+        const d = await r.json().catch(() => ({}));
+        $('capiResult').innerHTML = d.ok
+          ? `<span class="text-emerald-400">✓ Meta accepted the test Lead (events_received: ${esc(d.events_received)}, trace ${esc(d.fbtrace_id)}). Check Events Manager › Test Events.</span>`
+          : `<span class="text-amber-400">✗ ${esc(d.error || ('HTTP ' + r.status + ' — is the meta-capi function deployed with JWT verification off?'))}</span>`;
+      } catch (e) { $('capiResult').innerHTML = `<span class="text-rose-400">✗ ${esc(e.message)} — is the meta-capi function deployed?</span>`; }
     }
 
     // ---------------- TAB 4: PIXEL TEST ----------------

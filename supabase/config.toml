@@ -1,0 +1,5 @@
+# Used only if you deploy with the Supabase CLI (`supabase functions deploy meta-capi`).
+# The website calls this function with the public publishable key, which is not a JWT,
+# so JWT verification must be off. The function itself only accepts a fixed list of events.
+[functions.meta-capi]
+verify_jwt = false

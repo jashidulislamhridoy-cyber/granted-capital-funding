@@ -1092,6 +1092,14 @@
                 <div>• <span class="text-zinc-500">Entity:</span> <span id="resBiz" class="text-white font-semibold"></span></div>
                 <div>• <span class="text-zinc-500">Credit Tier:</span> <span id="resCredit" class="text-gold-light font-semibold"></span></div>
                 <div>• <span class="text-zinc-500">Target Capital:</span> <span id="resAmount" class="text-gold-light font-semibold"></span></div>
+                <div>• <span class="text-zinc-500">Priority Track:</span> <span id="resTier" class="text-gold-light font-semibold"></span></div>
+              </div>
+
+              <div id="resultCalendlyBox" class="hidden text-left space-y-2">
+                <div class="text-[11px] font-mono uppercase tracking-wider text-gold">Pick a time — your details are already filled in</div>
+                <div class="rounded-2xl overflow-hidden border border-gold/40 bg-white h-[680px]">
+                  <iframe id="resultCalendlyIframe" title="Book your strategy call with Aaron Lee" class="w-full h-full border-0"></iframe>
+                </div>
               </div>
 
               <div class="space-y-3 pt-2">
@@ -1725,10 +1733,59 @@
       TestEvent:         { meta: ['trackCustom', 'GCF_TestEvent'],  ga: 'gcf_test_event',     tt: 'ClickButton',          ads: false }
     };
 
-    function trackEvent(name, meta = {}) {
+    // Conversions get a unique event_id shared by the browser pixel and the
+    // server-side Conversions API call, so Meta counts each one only once.
+    const CAPI_EVENTS = new Set(['Lead', 'SubmitApplication', 'Schedule', 'AffiliateClick']);
+
+    function getCookie(n) {
+      const m = document.cookie.match(new RegExp('(?:^|; )' + n.replace(/[.$?*|{}()\[\]\\\/+^]/g, '\\$&') + '=([^;]*)'));
+      return m ? decodeURIComponent(m[1]) : '';
+    }
+    function getFbc() {
+      const c = getCookie('_fbc');
+      if (c) return c;
+      return attribution.fbclid ? `fb.1.${attribution.fbclid_ts || Date.now()}.${attribution.fbclid}` : '';
+    }
+    if (attribution.fbclid && !attribution.fbclid_ts) { attribution.fbclid_ts = Date.now(); writeJSON(SS, 'gcf_attr', attribution); }
+
+    // Visitor details remembered for this browser session (used for CAPI + Calendly pre-fill)
+    function getPrefill() { return readJSON(SS, 'gcf_prefill') || {}; }
+    function setPrefill(p) { writeJSON(SS, 'gcf_prefill', { ...getPrefill(), ...p }); refreshCalendlyLinks(); }
+
+    function sendCapi(name, eventId, meta, user) {
+      if (!GCF.SUPABASE_URL || !PIXELS.meta) return;
+      const p = getPrefill();
+      const u = user || {};
+      const body = {
+        event_name: name,
+        event_id: eventId,
+        event_source_url: location.href.slice(0, 500),
+        custom_data: meta || {},
+        user: {
+          email: u.email || p.email || '', phone: u.phone || p.phone || '', name: u.name || p.name || '',
+          external_id: getSessionId(), fbp: getCookie('_fbp'), fbc: getFbc()
+        }
+      };
+      try {
+        fetch(GCF.SUPABASE_URL.replace(/\/$/, '') + '/functions/v1/meta-capi', {
+          method: 'POST', keepalive: true,
+          headers: { 'Content-Type': 'application/json', apikey: GCF.SUPABASE_ANON_KEY },
+          body: JSON.stringify(body)
+        }).catch(() => {});
+      } catch (e) {}
+    }
+
+    function trackEvent(name, meta = {}, user = null) {
       const m = EVENT_MAP[name];
       if (!m) return;
-      try { if (PIXELS.meta && window.fbq) fbq(m.meta[0], m.meta[1], meta); } catch (e) {}
+      const eventId = CAPI_EVENTS.has(name) ? `${name}-${uuid()}` : null;
+      try {
+        if (PIXELS.meta && window.fbq) {
+          if (eventId) fbq(m.meta[0], m.meta[1], meta, { eventID: eventId });
+          else fbq(m.meta[0], m.meta[1], meta);
+        }
+      } catch (e) {}
+      if (eventId) { sendCapi(name, eventId, meta, user); meta = { ...meta, event_id: eventId }; }
       try { if (m.ga && window.gtag && (PIXELS.ga4 || PIXELS.gads)) gtag('event', m.ga, meta); } catch (e) {}
       try {
         const label = (settings.gads_conversion_label || '').trim();
@@ -1843,15 +1900,8 @@
         replaceTextEverywhere(shownEmail, email); shownEmail = email;
       }
 
-      // Calendly + MyScoreIQ affiliate links
-      const cal = safeUrl(s.calendly_url, DEFAULT_SETTINGS.calendly_url);
-      document.querySelectorAll('a[href*="calendly.com"]').forEach(a => a.setAttribute('href', cal));
-      const iframe = document.getElementById('inlineCalendlyIframe');
-      if (iframe) {
-        const embed = cal + (cal.includes('?') ? '&' : '?') + 'hide_gdpr_banner=1&embed_type=Inline&embed_domain=' + encodeURIComponent(location.hostname || 'localhost');
-        iframe.setAttribute('data-src', embed);
-        if (iframe.getAttribute('src')) iframe.setAttribute('src', embed);
-      }
+      // Calendly (pre-filled) + MyScoreIQ affiliate links
+      refreshCalendlyLinks();
       const msiq = safeUrl(s.myscoreiq_url, DEFAULT_SETTINGS.myscoreiq_url);
       document.querySelectorAll('a[href*="myscoreiq.com"]').forEach(a => a.setAttribute('href', msiq));
 
@@ -1871,6 +1921,38 @@
       document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(l => l.setAttribute('href', logo));
 
       renderSocialLinks();
+    }
+
+    // Calendly link with the visitor's details + ad attribution pre-filled
+    function calendlyLink(embed) {
+      let base = safeUrl(settings.calendly_url, DEFAULT_SETTINGS.calendly_url);
+      let u;
+      try { u = new URL(base); } catch (e) { u = new URL(DEFAULT_SETTINGS.calendly_url); }
+      const p = getPrefill();
+      if (p.name) u.searchParams.set('name', p.name);
+      if (p.email) u.searchParams.set('email', p.email);
+      if (p.a1) u.searchParams.set('a1', p.a1);
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(k => { if (attribution[k]) u.searchParams.set(k, attribution[k]); });
+      if (embed) {
+        u.searchParams.set('hide_gdpr_banner', '1');
+        u.searchParams.set('embed_type', 'Inline');
+        u.searchParams.set('embed_domain', location.hostname || 'localhost');
+      }
+      return u.toString();
+    }
+    function refreshCalendlyLinks() {
+      const link = calendlyLink(false), embed = calendlyLink(true);
+      document.querySelectorAll('a[href*="calendly.com"]').forEach(a => a.setAttribute('href', link));
+      ['inlineCalendlyIframe', 'resultCalendlyIframe'].forEach(id => {
+        const f = document.getElementById(id);
+        if (!f) return;
+        f.setAttribute('data-src', embed);
+        if (f.getAttribute('src') && f.getAttribute('src') !== embed) f.setAttribute('src', embed);
+      });
+    }
+    function leadTier(credit, llc) {
+      if (credit === '<680') return 'Credit Restoration / Keys Track';
+      return llc === 'Yes - Active US LLC' ? 'Tier-1 Priority' : 'LLC Setup Needed';
     }
 
     function renderAll() {
@@ -2096,12 +2178,19 @@
       const phone = document.getElementById('leadPhone').value.trim();
       if (btn) { btn.disabled = true; btn.style.opacity = '0.7'; }
 
+      const tier = leadTier(preQualAnswers.credit, preQualAnswers.llc);
       saveLead({
-        source: 'prequal', name, email, phone, business,
+        source: 'prequal', name, email, phone, business, lead_tier: tier,
         program: preQualAnswers.program, credit_tier: preQualAnswers.credit,
         llc_status: preQualAnswers.llc, target_amount: preQualAnswers.amount
       }).finally(() => { if (btn) { btn.disabled = false; btn.style.opacity = ''; } });
-      trackEvent('Lead', { form: 'prequal', program: preQualAnswers.program, value_tier: preQualAnswers.amount });
+      setPrefill({ name, email, phone,
+        a1: `${tier} | ${preQualAnswers.program} | FICO ${preQualAnswers.credit} | ${preQualAnswers.llc} | Target ${preQualAnswers.amount} | ${business}`.slice(0, 480) });
+      trackEvent('Lead', { form: 'prequal', program: preQualAnswers.program, value_tier: preQualAnswers.amount, lead_tier: tier }, { name, email, phone });
+      const tierBadge = document.getElementById('resTier');
+      if (tierBadge) tierBadge.textContent = tier;
+      const rf = document.getElementById('resultCalendlyIframe');
+      if (rf) { rf.setAttribute('src', rf.getAttribute('data-src')); document.getElementById('resultCalendlyBox').classList.remove('hidden'); }
 
       document.getElementById('formContainer').classList.add('hidden');
       document.getElementById('preQualResult').classList.remove('hidden');
@@ -2175,7 +2264,8 @@
         if (up.error) throw up.error;
         const res = await saveLead({ source: 'vault', name: vName, email: vEmail, program: vService, document_path: path, document_name: file.name.slice(0, 250) });
         if (!res.ok) throw (res.error || new Error('lead not saved'));
-        trackEvent('SubmitApplication', { service: vService });
+        setPrefill({ name: vName, email: vEmail });
+        trackEvent('SubmitApplication', { service: vService }, { name: vName, email: vEmail });
         vaultMessage(`✓ Received securely for ${vName} (${vService}). Book your Calendly review alongside.`, 'ok');
         form.reset();
         document.getElementById('vaultFileName').textContent = 'Encrypted client-to-underwriter transfer • Max 25MB';
@@ -2193,8 +2283,9 @@
       event.preventDefault();
       const name = document.getElementById('chkName').value.trim();
       const email = document.getElementById('chkEmail').value.trim();
-      saveLead({ source: 'checklist', name, email, program: '2026 Funding Checklist' });
-      trackEvent('Lead', { form: 'checklist' });
+      saveLead({ source: 'checklist', name, email, program: '2026 Funding Checklist', lead_tier: 'Checklist Opt-in' });
+      setPrefill({ name, email, a1: getPrefill().a1 || 'Checklist Opt-in | 2026 0% APR Funding Checklist' });
+      trackEvent('Lead', { form: 'checklist' }, { name, email });
       document.getElementById('checklistGateForm').classList.add('hidden');
       document.getElementById('checklistUnlockedContent').classList.remove('hidden');
     }

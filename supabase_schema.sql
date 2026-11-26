@@ -281,3 +281,55 @@ where not exists (select 1 from public.faqs);
 
 
 -- Done. Next: Authentication > Users > Add user (same email as admin_users), and turn OFF 'Allow new users to sign up'.
+
+-- =====================================================================
+-- 5) v2 UPGRADE — Meta CAPI, lead tiers, ad spend & ROI  (idempotent)
+-- =====================================================================
+
+-- Admin-only key/value store for SECRETS (Meta CAPI token, test code, fee %).
+-- Never put secrets in site_settings: that table is publicly readable.
+create table if not exists public.private_settings (
+  key        text primary key,
+  value      text not null default '',
+  updated_at timestamptz not null default now()
+);
+alter table public.private_settings enable row level security;
+drop policy if exists "admin only" on public.private_settings;
+create policy "admin only" on public.private_settings for all to authenticated
+  using (public.is_admin()) with check (public.is_admin());
+grant select, insert, update, delete on public.private_settings to authenticated;
+insert into public.private_settings (key, value) values
+  ('meta_capi_token', ''), ('meta_test_event_code', ''), ('fee_percent', '')
+on conflict (key) do nothing;
+
+-- Ad spend log (admin only)
+create table if not exists public.ad_spend_logs (
+  id           bigint generated always as identity primary key,
+  spend_date   date not null default current_date,
+  platform     text not null default 'Facebook',
+  amount_spent numeric(12,2) not null check (amount_spent >= 0),
+  notes        text,
+  created_at   timestamptz not null default now()
+);
+create index if not exists ad_spend_date_idx on public.ad_spend_logs (spend_date desc);
+alter table public.ad_spend_logs enable row level security;
+drop policy if exists "admin only" on public.ad_spend_logs;
+create policy "admin only" on public.ad_spend_logs for all to authenticated
+  using (public.is_admin()) with check (public.is_admin());
+grant select, insert, update, delete on public.ad_spend_logs to authenticated;
+grant usage, select on all sequences in schema public to authenticated;
+
+-- Leads: funded amount + automatic qualification tier
+alter table public.leads add column if not exists funded_amount numeric(14,2) check (funded_amount >= 0);
+alter table public.leads add column if not exists lead_tier text;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'leads_lead_tier_check') then
+    alter table public.leads add constraint leads_lead_tier_check
+      check (lead_tier in ('Tier-1 Priority','Credit Restoration / Keys Track','LLC Setup Needed','Checklist Opt-in'));
+  end if;
+end $$;
+
+-- Visitors may submit leads but can never set status, notes or funded amounts
+drop policy if exists "public insert lead" on public.leads;
+create policy "public insert lead" on public.leads for insert to anon, authenticated
+  with check (status = 'New Lead' and notes is null and funded_amount is null);
