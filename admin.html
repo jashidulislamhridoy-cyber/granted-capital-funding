@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin Command Center | Granted Capital Funding</title>
+  <link rel="icon" type="image/png" href="brand-logo.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: { obsidian: '#09090B', slateDark: '#121216', slateCard: '#18181D',
+        gold: { DEFAULT: '#D4AF37', light: '#F5D061', dark: '#AA821E' } },
+      fontFamily: { cinzel: ['Cinzel', 'serif'], playfair: ['Playfair Display', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+      boxShadow: { 'gold-glow': '0 0 35px -5px rgba(212,175,55,0.35)', 'gold-sm': '0 4px 20px -2px rgba(212,175,55,0.25)' } } } };
+  </script>
+  <style>
+    body { background: #09090B; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .bg-gold-gradient { background: linear-gradient(135deg, #F5D061 0%, #D4AF37 55%, #B88E22 100%); }
+    .bg-gold-gradient:hover { background: linear-gradient(135deg, #FFE07D 0%, #E0BC44 55%, #C99D2B 100%); }
+    .text-gold-gradient { background: linear-gradient(135deg, #F5D061, #D4AF37 50%, #AA821E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .inp { width: 100%; padding: .6rem .85rem; border-radius: .75rem; background: #09090B; border: 1px solid rgba(255,255,255,.15); color: #fff; font-size: .85rem; }
+    .inp:focus { outline: none; border-color: #D4AF37; }
+    .lbl { display: block; font-size: .7rem; font-weight: 600; color: #a1a1aa; margin-bottom: .3rem; text-transform: uppercase; letter-spacing: .06em; }
+    .btn-gold { padding: .6rem 1.1rem; border-radius: .75rem; font-weight: 700; font-size: .8rem; color: #09090B; }
+    .btn-ghost { padding: .55rem 1rem; border-radius: .75rem; font-size: .8rem; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.15); color: #e4e4e7; }
+    .btn-ghost:hover { background: rgba(255,255,255,.1); }
+    .btn-danger { padding: .55rem 1rem; border-radius: .75rem; font-size: .8rem; background: rgba(244,63,94,.12); border: 1px solid rgba(244,63,94,.35); color: #fb7185; }
+    .card { background: #18181D; border: 1px solid rgba(255,255,255,.1); border-radius: 1.25rem; }
+    .navbtn.active { background: linear-gradient(135deg, #F5D061 0%, #D4AF37 55%, #B88E22 100%); color: #09090B; font-weight: 700; }
+    table.t th { text-align: left; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; color: #a1a1aa; padding: .65rem .75rem; border-bottom: 1px solid rgba(255,255,255,.1); white-space: nowrap; }
+    table.t td { padding: .65rem .75rem; border-bottom: 1px solid rgba(255,255,255,.06); font-size: .8rem; vertical-align: top; }
+    .badge { display: inline-flex; align-items: center; gap: .3rem; padding: .15rem .55rem; border-radius: 999px; font-size: .65rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+    .b-on { background: rgba(16,185,129,.15); color: #34d399; border: 1px solid rgba(16,185,129,.35); }
+    .b-off { background: rgba(255,255,255,.05); color: #a1a1aa; border: 1px solid rgba(255,255,255,.12); }
+    .b-warn { background: rgba(245,158,11,.15); color: #fbbf24; border: 1px solid rgba(245,158,11,.35); }
+  </style>
+</head>
+<body class="antialiased min-h-screen">
+
+  <!-- ============ LOGIN ============ -->
+  <section id="loginView" class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md card p-8 border-gold/40 shadow-gold-glow">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-12 h-12 rounded-xl bg-black border border-gold/50 overflow-hidden"><img src="brand-logo.png" alt="" class="w-full h-full object-contain" /></div>
+        <div>
+          <div class="font-cinzel font-bold tracking-widest">GRANTED CAPITAL FUNDING</div>
+          <div class="text-[11px] font-mono text-gold uppercase tracking-wider">Admin Command Center</div>
+        </div>
+      </div>
+      <div id="setupWarning" class="hidden mb-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300">
+        Supabase isn't connected yet. Add your <span class="font-mono">SUPABASE_URL</span> and <span class="font-mono">SUPABASE_ANON_KEY</span> to <span class="font-mono">config.js</span>.
+      </div>
+      <form id="loginForm" class="space-y-4">
+        <div><label class="lbl" for="loginEmail">Admin email</label><input id="loginEmail" type="email" required autocomplete="username" class="inp" /></div>
+        <div><label class="lbl" for="loginPassword">Password</label><input id="loginPassword" type="password" required autocomplete="current-password" class="inp" /></div>
+        <button type="submit" id="loginBtn" class="w-full btn-gold bg-gold-gradient py-3 shadow-gold-sm">Sign In →</button>
+        <p id="loginError" class="hidden text-xs text-rose-400 font-mono"></p>
+      </form>
+      <a href="index.html" class="block mt-6 text-center text-xs font-mono text-zinc-500 hover:text-gold-light">← Back to website</a>
+    </div>
+  </section>
+
+  <!-- ============ APP ============ -->
+  <div id="appView" class="hidden min-h-screen lg:flex">
+    <aside class="lg:w-64 lg:min-h-screen bg-slateDark border-b lg:border-b-0 lg:border-r border-white/10 p-4 lg:p-5 flex lg:flex-col gap-4 lg:gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-black border border-gold/50 overflow-hidden shrink-0"><img src="brand-logo.png" alt="" class="w-full h-full object-contain" /></div>
+        <div class="hidden sm:block">
+          <div class="font-cinzel font-bold text-xs tracking-widest">GRANTED CAPITAL</div>
+          <div class="text-[10px] font-mono text-gold uppercase">Command Center</div>
+        </div>
+      </div>
+      <nav class="flex lg:flex-col gap-1.5 flex-1 overflow-x-auto">
+        <button class="navbtn active text-left px-3.5 py-2.5 rounded-xl text-sm text-zinc-300 whitespace-nowrap" data-tab="overview">📊 Overview</button>
+        <button class="navbtn text-left px-3.5 py-2.5 rounded-xl text-sm text-zinc-300 whitespace-nowrap" data-tab="leads">🗂 Leads &amp; Vault</button>
+        <button class="navbtn text-left px-3.5 py-2.5 rounded-xl text-sm text-zinc-300 whitespace-nowrap" data-tab="content">✏️ Website Content</button>
+        <button class="navbtn text-left px-3.5 py-2.5 rounded-xl text-sm text-zinc-300 whitespace-nowrap" data-tab="pixels">🎯 Ad Tracking</button>
+      </nav>
+      <div class="hidden lg:block text-[11px] text-zinc-500 font-mono break-all" id="whoami"></div>
+      <div class="flex lg:flex-col gap-2">
+        <a href="index.html" target="_blank" rel="noopener" class="btn-ghost text-center whitespace-nowrap">View Site ↗</a>
+        <button id="signOutBtn" class="btn-ghost whitespace-nowrap">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+
+      <!-- ===== TAB 1: OVERVIEW ===== -->
+      <section id="tab-overview" class="tab space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div class="text-[11px] font-mono uppercase tracking-[0.2em] text-gold">Marketing Analytics</div>
+            <h1 class="font-playfair text-3xl font-bold">Overview</h1>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="rangeSel" class="inp !w-auto">
+              <option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option><option value="0">All time</option>
+            </select>
+            <button class="btn-ghost" onclick="loadOverview()">↻ Refresh</button>
+          </div>
+        </div>
+        <div id="kpis" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3"></div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <div class="card p-5"><h3 class="font-playfair text-lg font-bold mb-3">Leads by Ad Source</h3><div id="bySource" class="overflow-x-auto"></div></div>
+          <div class="card p-5"><h3 class="font-playfair text-lg font-bold mb-3">Leads by Program</h3><div id="byProgram" class="overflow-x-auto"></div></div>
+          <div class="card p-5 xl:col-span-2"><h3 class="font-playfair text-lg font-bold mb-3">Leads by Campaign (utm_campaign)</h3><div id="byCampaign" class="overflow-x-auto"></div></div>
+        </div>
+        <p class="text-[11px] text-zinc-500 font-mono">Visitors = unique browser sessions with a page view. Bookings = completed bookings confirmed by the inline Calendly calendar; link clicks are shown separately.</p>
+      </section>
+
+      <!-- ===== TAB 2: LEADS ===== -->
+      <section id="tab-leads" class="tab hidden space-y-5">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div class="text-[11px] font-mono uppercase tracking-[0.2em] text-gold">CRM</div>
+            <h1 class="font-playfair text-3xl font-bold">Leads &amp; Document Vault</h1>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn-ghost" onclick="loadLeads()">↻ Refresh</button>
+            <button class="btn-gold bg-gold-gradient" onclick="exportCsv()">⬇ Export Leads to CSV</button>
+          </div>
+        </div>
+        <div class="card p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+          <input id="fSearch" class="inp" placeholder="Search name, email, phone, business…" />
+          <select id="fSource" class="inp"><option value="">All forms</option><option value="prequal">Pre-Qualification</option><option value="checklist">Checklist opt-in</option><option value="vault">Document Vault</option></select>
+          <select id="fStatus" class="inp"><option value="">All statuses</option></select>
+          <select id="fProgram" class="inp"><option value="">All programs</option></select>
+        </div>
+        <div class="card overflow-x-auto"><table class="t w-full min-w-[1050px]"><thead><tr>
+          <th>Date</th><th>Contact</th><th>Business</th><th>Program / Tier / Target</th><th>Form</th><th>Ad Source</th><th>Document</th><th>Status</th>
+        </tr></thead><tbody id="leadRows"></tbody></table></div>
+        <p id="leadCount" class="text-xs text-zinc-500 font-mono"></p>
+      </section>
+
+      <!-- ===== TAB 3: CONTENT ===== -->
+      <section id="tab-content" class="tab hidden space-y-6">
+        <div>
+          <div class="text-[11px] font-mono uppercase tracking-[0.2em] text-gold">CMS</div>
+          <h1 class="font-playfair text-3xl font-bold">Website Content</h1>
+          <p class="text-sm text-zinc-400 mt-1">Changes save to Supabase and appear for every visitor on their next page load.</p>
+        </div>
+
+        <div class="card p-5 space-y-4">
+          <div class="flex items-center justify-between gap-3"><h3 class="font-playfair text-xl font-bold">Hero, Contact &amp; Links</h3><button class="btn-gold bg-gold-gradient" onclick="saveSettings('settingsForm')">Save Changes</button></div>
+          <div id="settingsForm" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <div class="card p-5 space-y-4">
+          <h3 class="font-playfair text-xl font-bold">Founder Media &amp; Logo</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="space-y-2">
+              <span class="lbl">Founder portrait</span>
+              <img id="pvPhoto" class="w-full aspect-square object-cover rounded-xl border border-white/10 bg-black" alt="" />
+              <input type="file" accept="image/*" onchange="uploadMedia(event,'founder_photo_url','founder')" class="text-xs" />
+            </div>
+            <div class="space-y-2">
+              <span class="lbl">Founder intro video (MP4)</span>
+              <video id="pvVideo" controls playsinline preload="metadata" class="w-full aspect-video rounded-xl border border-white/10 bg-black"></video>
+              <input type="file" accept="video/mp4,video/webm" onchange="uploadMedia(event,'founder_video_url','video')" class="text-xs" />
+              <p class="text-[11px] text-zinc-500">Max 50 MB on the free Supabase plan. Use MP4 (H.264).</p>
+            </div>
+            <div class="space-y-2">
+              <span class="lbl">Brand logo (header, footer, tab icon)</span>
+              <img id="pvLogo" class="w-32 h-32 object-contain rounded-xl border border-white/10 bg-black" alt="" />
+              <input type="file" accept="image/png,image/jpeg,image/webp" onchange="uploadMedia(event,'brand_logo_url','logo')" class="text-xs" />
+            </div>
+          </div>
+          <p id="mediaMsg" class="text-xs font-mono text-zinc-400"></p>
+        </div>
+
+        <div class="card p-5 space-y-4">
+          <div class="flex items-center justify-between gap-3"><h3 class="font-playfair text-xl font-bold">Proof &amp; Cars Gallery</h3><button class="btn-gold bg-gold-gradient" onclick="addRow('proof_gallery')">+ Add Card</button></div>
+          <div id="proofList" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4"></div>
+        </div>
+
+        <div class="card p-5 space-y-4">
+          <div class="flex items-center justify-between gap-3"><h3 class="font-playfair text-xl font-bold">Client Reviews</h3><button class="btn-gold bg-gold-gradient" onclick="addRow('client_reviews')">+ Add Review</button></div>
+          <div id="reviewList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <div class="card p-5 space-y-4">
+          <div class="flex items-center justify-between gap-3"><h3 class="font-playfair text-xl font-bold">FAQs</h3><button class="btn-gold bg-gold-gradient" onclick="addRow('faqs')">+ Add FAQ</button></div>
+          <p class="text-[11px] text-zinc-500">Answers accept simple HTML such as &lt;strong&gt; and &lt;a href="…"&gt;. Any MyScoreIQ link is automatically pointed at the affiliate URL above.</p>
+          <div id="faqList" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <!-- ===== TAB 4: PIXELS ===== -->
+      <section id="tab-pixels" class="tab hidden space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div class="text-[11px] font-mono uppercase tracking-[0.2em] text-gold">Conversion Tracking</div>
+            <h1 class="font-playfair text-3xl font-bold">Ad Pixel &amp; Tracking Center</h1>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn-ghost" onclick="testPixels()">⚡ Test Fire Pixel Events</button>
+            <button class="btn-gold bg-gold-gradient" onclick="saveSettings('pixelForm')">Save Tracking IDs</button>
+          </div>
+        </div>
+        <div id="pixelForm" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        <div class="card p-5 space-y-2">
+          <h3 class="font-playfair text-lg font-bold">Events fired automatically</h3>
+          <div class="text-xs text-zinc-400 leading-relaxed font-mono">
+            PageView · Lead (pre-qualification &amp; checklist) · SubmitApplication (document vault) · Schedule (Calendly) · AffiliateClick (MyScoreIQ) · Contact (phone/email).<br />
+            Each event goes to every active pixel and is logged in Supabase with the visitor's utm_source / utm_campaign / fbclid / gclid.
+            Google Ads conversions fire on Lead and SubmitApplication when both the Conversion ID and Label are set.
+          </div>
+        </div>
+        <div class="card p-5"><h3 class="font-playfair text-lg font-bold mb-3">Last test events received</h3><div id="testLog" class="text-xs font-mono text-zinc-400">—</div></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="hidden fixed bottom-5 right-5 z-50 px-4 py-3 rounded-xl text-sm font-semibold shadow-gold-glow"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+    const CFG = window.GCF_CONFIG || {};
+    const sb = (CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY && window.supabase) ? window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY) : null;
+    const STATUSES = ['New Lead', 'Call Booked', 'In Review', 'Approved', 'Funded'];
+    const CATEGORIES = ['Exotic Cars', 'Real Estate & Homes', 'Bank Approvals'];
+    const $ = id => document.getElementById(id);
+    const esc = v => (v === null || v === undefined) ? '' : String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    let SETTINGS = {}, LEADS = [];
+
+    function toast(msg, ok = true) {
+      const t = $('toast');
+      t.textContent = msg;
+      t.className = 'fixed bottom-5 right-5 z-50 px-4 py-3 rounded-xl text-sm font-semibold ' + (ok ? 'bg-gold-gradient text-obsidian' : 'bg-rose-600 text-white');
+      clearTimeout(t._h); t._h = setTimeout(() => t.classList.add('hidden'), 3200);
+    }
+
+    // ---------------- AUTH ----------------
+    async function boot() {
+      if (!sb) { $('setupWarning').classList.remove('hidden'); $('loginBtn').disabled = true; $('loginBtn').style.opacity = .5; return; }
+      const { data } = await sb.auth.getSession();
+      if (data.session) await enter(data.session);
+    }
+    async function enter(session) {
+      const { data: ok, error } = await sb.rpc('is_admin');
+      if (error || !ok) {
+        await sb.auth.signOut();
+        showLoginError('This account is not on the admin list. Add its email to admin_users in Supabase.');
+        return;
+      }
+      $('whoami').textContent = session.user.email;
+      $('loginView').classList.add('hidden');
+      $('appView').classList.remove('hidden');
+      await loadSettings();
+      loadOverview();
+    }
+    function showLoginError(m) { const e = $('loginError'); e.textContent = m; e.classList.remove('hidden'); }
+    $('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      $('loginError').classList.add('hidden');
+      const btn = $('loginBtn'); btn.disabled = true; btn.textContent = 'Signing in…';
+      const { data, error } = await sb.auth.signInWithPassword({ email: $('loginEmail').value.trim(), password: $('loginPassword').value });
+      btn.disabled = false; btn.textContent = 'Sign In →';
+      if (error) return showLoginError(error.message);
+      $('loginPassword').value = '';
+      enter(data.session);
+    });
+    $('signOutBtn').addEventListener('click', async () => { await sb.auth.signOut(); location.reload(); });
+
+    // ---------------- TABS ----------------
+    const loaded = {};
+    document.querySelectorAll('.navbtn').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('.navbtn').forEach(x => x.classList.toggle('active', x === b));
+      document.querySelectorAll('.tab').forEach(t => t.classList.add('hidden'));
+      const tab = b.dataset.tab; $('tab-' + tab).classList.remove('hidden');
+      if (tab === 'leads' && !loaded.leads) { loaded.leads = 1; loadLeads(); }
+      if (tab === 'content' && !loaded.content) { loaded.content = 1; renderSettingsForm(); loadLists(); }
+      if (tab === 'pixels' && !loaded.pixels) { loaded.pixels = 1; renderPixelForm(); loadTestLog(); }
+    }));
+
+    // ---------------- DATA HELPERS ----------------
+    async function fetchAll(build, max = 20000) {
+      const out = []; const page = 1000;
+      for (let from = 0; from < max; from += page) {
+        const { data, error } = await build().range(from, from + page - 1);
+        if (error) throw error;
+        out.push(...data);
+        if (data.length < page) break;
+      }
+      return out;
+    }
+    function sinceIso() { const d = Number($('rangeSel').value); return d ? new Date(Date.now() - d * 864e5).toISOString() : '1970-01-01T00:00:00Z'; }
+    function normSource(s) {
+      const v = (s || '').toLowerCase().trim();
+      if (!v) return 'Direct';
+      if (/facebook|fb|instagram|ig|meta/.test(v)) return 'Facebook';
+      if (/google|adwords|gads|youtube/.test(v)) return 'Google';
+      if (/tiktok|tt/.test(v)) return 'TikTok';
+      return v.charAt(0).toUpperCase() + v.slice(1);
+    }
+    function table(head, rows) {
+      if (!rows.length) return '<p class="text-xs text-zinc-500 font-mono">No data for this period yet.</p>';
+      return `<table class="t w-full"><thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    }
+    const pct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '—';
+
+    // ---------------- TAB 1: OVERVIEW ----------------
+    $('rangeSel').addEventListener('change', loadOverview);
+    async function loadOverview() {
+      $('kpis').innerHTML = '<p class="text-xs text-zinc-500 font-mono col-span-full">Loading…</p>';
+      try {
+        const since = sinceIso();
+        const [views, events, leads] = await Promise.all([
+          fetchAll(() => sb.from('analytics_events').select('session_id,utm_source').eq('event_name', 'PageView').gte('created_at', since)),
+          fetchAll(() => sb.from('analytics_events').select('event_name,metadata').in('event_name', ['Schedule', 'AffiliateClick', 'Contact']).gte('created_at', since)),
+          fetchAll(() => sb.from('leads').select('source,program,utm_source,utm_campaign,status').gte('created_at', since))
+        ]);
+        const sessions = new Set(views.map(v => v.session_id).filter(Boolean));
+        const booked = events.filter(e => e.event_name === 'Schedule' && e.metadata && e.metadata.booked).length;
+        const calClicks = events.filter(e => e.event_name === 'Schedule' && !(e.metadata && e.metadata.booked)).length;
+        const aff = events.filter(e => e.event_name === 'AffiliateClick').length;
+        const contact = events.filter(e => e.event_name === 'Contact').length;
+        const funded = leads.filter(l => l.status === 'Funded').length;
+        const k = [
+          ['Visitors', sessions.size.toLocaleString(), views.length.toLocaleString() + ' page views'],
+          ['Total Leads', leads.length.toLocaleString(), funded + ' funded'],
+          ['Conversion Rate', pct(leads.length, sessions.size), 'leads ÷ visitors'],
+          ['Calendly Bookings', booked.toLocaleString(), calClicks + ' calendar clicks/opens'],
+          ['MyScoreIQ Clicks', aff.toLocaleString(), 'affiliate link clicks'],
+          ['Phone / Email', contact.toLocaleString(), 'contact clicks']
+        ];
+        $('kpis').innerHTML = k.map(([l, v, s]) => `<div class="card p-4 border-gold/25"><div class="text-[10px] font-mono uppercase tracking-wider text-zinc-400">${l}</div><div class="font-mono text-2xl font-extrabold text-gold-light mt-1">${v}</div><div class="text-[11px] text-zinc-500 mt-0.5">${s}</div></div>`).join('');
+
+        const bySrc = {};
+        views.forEach(v => { const s = normSource(v.utm_source); (bySrc[s] = bySrc[s] || { v: new Set(), l: 0 }).v.add(v.session_id); });
+        leads.forEach(l => { const s = normSource(l.utm_source); (bySrc[s] = bySrc[s] || { v: new Set(), l: 0 }).l++; });
+        const order = ['Facebook', 'Google', 'TikTok', 'Direct'];
+        const srcRows = Object.entries(bySrc).sort((a, b) => (order.indexOf(a[0]) + 1 || 99) - (order.indexOf(b[0]) + 1 || 99) || b[1].l - a[1].l)
+          .map(([s, o]) => [esc(s), o.v.size, `<b class="text-gold-light">${o.l}</b>`, pct(o.l, o.v.size)]);
+        $('bySource').innerHTML = table(['Source', 'Visitors', 'Leads', 'Conv. %'], srcRows);
+
+        const byProg = {};
+        leads.forEach(l => { const p = l.program || '—'; (byProg[p] = byProg[p] || { n: 0, f: 0 }).n++; if (l.status === 'Funded') byProg[p].f++; });
+        $('byProgram').innerHTML = table(['Program', 'Leads', 'Funded'], Object.entries(byProg).sort((a, b) => b[1].n - a[1].n).map(([p, o]) => [esc(p), `<b class="text-gold-light">${o.n}</b>`, o.f]));
+
+        const byCamp = {};
+        leads.forEach(l => { const key = (l.utm_campaign || '(none)') + '|' + normSource(l.utm_source); byCamp[key] = (byCamp[key] || 0) + 1; });
+        $('byCampaign').innerHTML = table(['Campaign', 'Source', 'Leads'], Object.entries(byCamp).sort((a, b) => b[1] - a[1]).map(([k, n]) => { const [c, s] = k.split('|'); return [esc(c), esc(s), `<b class="text-gold-light">${n}</b>`]; }));
+      } catch (e) { $('kpis').innerHTML = `<p class="text-xs text-rose-400 font-mono col-span-full">Could not load analytics: ${esc(e.message)}</p>`; }
+    }
+
+    // ---------------- TAB 2: LEADS ----------------
+    $('fStatus').innerHTML += STATUSES.map(s => `<option>${s}</option>`).join('');
+    ['fSearch', 'fSource', 'fStatus', 'fProgram'].forEach(id => $(id).addEventListener('input', renderLeads));
+    async function loadLeads() {
+      $('leadRows').innerHTML = '<tr><td colspan="8" class="text-zinc-500 font-mono">Loading…</td></tr>';
+      try {
+        LEADS = await fetchAll(() => sb.from('leads').select('*').order('created_at', { ascending: false }), 10000);
+        const progs = [...new Set(LEADS.map(l => l.program).filter(Boolean))].sort();
+        const cur = $('fProgram').value;
+        $('fProgram').innerHTML = '<option value="">All programs</option>' + progs.map(p => `<option ${p === cur ? 'selected' : ''}>${esc(p)}</option>`).join('');
+        renderLeads();
+      } catch (e) { $('leadRows').innerHTML = `<tr><td colspan="8" class="text-rose-400 font-mono">${esc(e.message)}</td></tr>`; }
+    }
+    function filteredLeads() {
+      const q = $('fSearch').value.toLowerCase().trim(), src = $('fSource').value, st = $('fStatus').value, pr = $('fProgram').value;
+      return LEADS.filter(l => (!src || l.source === src) && (!st || l.status === st) && (!pr || l.program === pr) &&
+        (!q || [l.name, l.email, l.phone, l.business].some(v => (v || '').toLowerCase().includes(q))));
+    }
+    const FORM = { prequal: 'Pre-Qualification', checklist: 'Checklist', vault: 'Document Vault' };
+    function renderLeads() {
+      const rows = filteredLeads();
+      $('leadCount').textContent = `${rows.length} of ${LEADS.length} leads`;
+      $('leadRows').innerHTML = rows.length ? rows.map(l => `<tr>
+        <td class="whitespace-nowrap font-mono text-xs text-zinc-400">${new Date(l.created_at).toLocaleString()}</td>
+        <td><div class="font-semibold">${esc(l.name)}</div><div class="text-xs text-zinc-400">${esc(l.email)}</div><div class="text-xs text-zinc-400">${esc(l.phone)}</div></td>
+        <td>${esc(l.business)}<div class="text-xs text-zinc-500">${esc(l.llc_status)}</div></td>
+        <td>${esc(l.program)}<div class="text-xs text-zinc-400">${esc(l.credit_tier)} ${l.target_amount ? '• ' + esc(l.target_amount) : ''}</div></td>
+        <td><span class="badge b-off">${FORM[l.source] || esc(l.source)}</span></td>
+        <td class="text-xs">${esc(normSource(l.utm_source))}<div class="text-zinc-500">${esc(l.utm_campaign)}</div>${l.fbclid ? '<div class="text-zinc-500">fbclid ✓</div>' : ''}${l.gclid ? '<div class="text-zinc-500">gclid ✓</div>' : ''}</td>
+        <td>${l.document_path ? `<button class="btn-ghost !py-1 !px-2 text-xs" onclick="downloadDoc('${esc(l.id)}')">⬇ ${esc((l.document_name || 'file').slice(0, 22))}</button>` : '<span class="text-zinc-600">—</span>'}</td>
+        <td><select class="inp !py-1.5 !text-xs" onchange="setStatus('${esc(l.id)}', this.value)">${STATUSES.map(s => `<option ${s === l.status ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+      </tr>`).join('') : '<tr><td colspan="8" class="text-zinc-500 font-mono">No leads match.</td></tr>';
+    }
+    async function setStatus(id, status) {
+      const { error } = await sb.from('leads').update({ status }).eq('id', id);
+      if (error) return toast(error.message, false);
+      const l = LEADS.find(x => x.id === id); if (l) l.status = status;
+      toast('Status updated: ' + status);
+    }
+    async function downloadDoc(id) {
+      const l = LEADS.find(x => x.id === id); if (!l) return;
+      const { data, error } = await sb.storage.from('vault-docs').createSignedUrl(l.document_path, 120, { download: l.document_name || true });
+      if (error) return toast(error.message, false);
+      window.open(data.signedUrl, '_blank', 'noopener');
+    }
+    function exportCsv() {
+      const rows = filteredLeads();
+      const cols = ['created_at', 'status', 'source', 'name', 'email', 'phone', 'business', 'program', 'credit_tier', 'llc_status', 'target_amount',
+        'document_name', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'fbclid', 'gclid', 'landing_page', 'referrer'];
+      const cell = v => { let s = v === null || v === undefined ? '' : String(v); if (/^[=+\-@]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
+      const csv = [cols.join(','), ...rows.map(r => cols.map(c => cell(r[c])).join(','))].join('\r\n');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+      a.download = `granted-capital-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      toast(`Exported ${rows.length} leads`);
+    }
+
+    // ---------------- SETTINGS (shared by content + pixels) ----------------
+    const CONTENT_FIELDS = [
+      ['hero_badge', 'Hero badge', 'text'], ['contact_phone', 'Phone (display format)', 'text'],
+      ['hero_headline_html', 'Hero headline (HTML allowed)', 'area'], ['contact_email', 'Contact email', 'text'],
+      ['hero_subtitle_html', 'Hero subtitle (HTML allowed)', 'area'], ['calendly_url', 'Calendly booking URL', 'text'],
+      ['founder_bio_html', 'Founder bio (HTML allowed)', 'area'], ['myscoreiq_url', 'MyScoreIQ affiliate URL', 'text'],
+      ['footer_disclosure_html', 'Footer CROA + affiliate disclosure (HTML allowed)', 'area'], ['founder_video_poster_url', 'Video cover image URL (blank = founder photo)', 'text'],
+      ['social_youtube', 'YouTube URL', 'text'], ['social_instagram', 'Instagram URL', 'text'],
+      ['social_facebook', 'Facebook URL', 'text'], ['social_linkedin', 'LinkedIn URL', 'text'],
+      ['social_tiktok', 'TikTok URL', 'text']
+    ];
+    const PIXEL_FIELDS = [
+      ['meta_pixel_id', 'Meta (Facebook / Instagram) Pixel ID', 'text', /^\d{8,20}$/, '123456789012345'],
+      ['gtm_id', 'Google Tag Manager ID', 'text', /^GTM-[A-Z0-9]{4,12}$/i, 'GTM-XXXXXXX'],
+      ['ga4_id', 'Google Analytics 4 Measurement ID', 'text', /^G-[A-Z0-9]{4,15}$/i, 'G-XXXXXXXXXX'],
+      ['gads_conversion_id', 'Google Ads Conversion ID', 'text', /^AW-\d{6,15}$/i, 'AW-123456789'],
+      ['gads_conversion_label', 'Google Ads Conversion Label', 'text', /^[\w-]{4,40}$/, 'AbC-D_efG-h12_34-567'],
+      ['tiktok_pixel_id', 'TikTok Pixel ID', 'text', /^[A-Z0-9]{10,30}$/i, 'CXXXXXXXXXXXXXXXXXXX'],
+      ['custom_head_scripts', 'Custom header scripts (pasted HTML, e.g. other pixels)', 'area', null, '<script>…<\/script>']
+    ];
+    async function loadSettings() {
+      const { data, error } = await sb.from('site_settings').select('key,value');
+      if (error) return toast(error.message, false);
+      SETTINGS = Object.fromEntries(data.map(r => [r.key, r.value]));
+    }
+    function fieldHtml([key, label, type, rx, ph]) {
+      const v = esc(SETTINGS[key] || '');
+      const badge = rx !== undefined ? `<span class="badge ml-2" data-badge="${key}"></span>` : '';
+      const ctl = type === 'area'
+        ? `<textarea data-key="${key}" rows="${key === 'custom_head_scripts' ? 6 : 3}" class="inp font-mono !text-xs" placeholder="${esc(ph || '')}">${v}</textarea>`
+        : `<input data-key="${key}" class="inp" value="${v}" placeholder="${esc(ph || '')}" />`;
+      return `<div class="${type === 'area' && key === 'custom_head_scripts' ? 'md:col-span-2' : ''}"><label class="lbl">${label}${badge}</label>${ctl}</div>`;
+    }
+    function renderSettingsForm() {
+      $('settingsForm').innerHTML = CONTENT_FIELDS.map(fieldHtml).join('');
+      $('pvPhoto').src = SETTINGS.founder_photo_url || 'image_7487d3.jpg';
+      $('pvVideo').src = SETTINGS.founder_video_url || 'aron-about.mp4';
+      $('pvLogo').src = SETTINGS.brand_logo_url || 'brand-logo.png';
+    }
+    function renderPixelForm() {
+      $('pixelForm').innerHTML = PIXEL_FIELDS.map(f => `<div class="card p-4 ${f[0] === 'custom_head_scripts' ? 'md:col-span-2' : ''}">${fieldHtml(f).replace(/^<div[^>]*>|<\/div>$/g, '')}</div>`).join('');
+      PIXEL_FIELDS.forEach(f => { const el = document.querySelector(`#pixelForm [data-key="${f[0]}"]`); el.addEventListener('input', () => paintBadge(f, el.value)); paintBadge(f, el.value); });
+    }
+    function paintBadge([key, , , rx], val) {
+      const b = document.querySelector(`[data-badge="${key}"]`); if (!b) return;
+      const v = (val || '').trim();
+      if (!v) { b.className = 'badge ml-2 b-off'; b.textContent = '○ Inactive'; }
+      else if (!rx || rx.test(v)) { b.className = 'badge ml-2 b-on'; b.textContent = '● Active'; }
+      else { b.className = 'badge ml-2 b-warn'; b.textContent = '! Check format'; }
+    }
+    async function saveSettings(containerId) {
+      const rows = [...document.querySelectorAll(`#${containerId} [data-key]`)].map(el => ({ key: el.dataset.key, value: el.value.trim(), updated_at: new Date().toISOString() }));
+      const { error } = await sb.from('site_settings').upsert(rows, { onConflict: 'key' });
+      if (error) return toast(error.message, false);
+      rows.forEach(r => SETTINGS[r.key] = r.value);
+      toast('Saved — live for all visitors');
+    }
+
+    // ---------------- MEDIA UPLOADS ----------------
+    async function putFile(file, folder) {
+      const safe = file.name.replace(/[^\w.\-]+/g, '_').slice(-80);
+      const path = `${folder}/${Date.now()}-${safe}`;
+      const { error } = await sb.storage.from('site-media').upload(path, file, { contentType: file.type, upsert: false, cacheControl: '31536000' });
+      if (error) throw error;
+      return sb.storage.from('site-media').getPublicUrl(path).data.publicUrl;
+    }
+    async function uploadMedia(ev, key, folder) {
+      const file = ev.target.files[0]; if (!file) return;
+      if (file.size > 50 * 1024 * 1024) return toast('File is over 50 MB', false);
+      $('mediaMsg').textContent = `Uploading ${file.name}…`;
+      try {
+        const url = await putFile(file, folder);
+        const { error } = await sb.from('site_settings').upsert({ key, value: url, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        if (error) throw error;
+        SETTINGS[key] = url; renderSettingsForm();
+        $('mediaMsg').textContent = '✓ Uploaded and published.'; toast('Media updated');
+      } catch (e) { $('mediaMsg').textContent = 'Upload failed: ' + e.message; toast(e.message, false); }
+      ev.target.value = '';
+    }
+
+    // ---------------- LISTS: proof / reviews / faqs ----------------
+    const LISTS = {
+      proof_gallery: { el: 'proofList', blank: { title: 'New Result', amount: '$100,000 @ 0% APR', category: 'Exotic Cars', client: 'Client LLC • Funded in 10 Days', image_url: '' } },
+      client_reviews: { el: 'reviewList', blank: { name: 'New Client', business: 'Business LLC', amount: '$100,000 @ 0% APR', stars: 5, text: 'Write the testimonial here.' } },
+      faqs: { el: 'faqList', blank: { question: 'New question?', answer_html: 'Answer goes here.' } }
+    };
+    const DATA = { proof_gallery: [], client_reviews: [], faqs: [] };
+    async function loadLists() {
+      for (const t of Object.keys(LISTS)) {
+        const { data, error } = await sb.from(t).select('*').order('sort_order').order('id');
+        if (error) { toast(error.message, false); continue; }
+        DATA[t] = data; renderList(t);
+      }
+    }
+    const activeToggle = r => `<label class="flex items-center gap-2 text-xs text-zinc-300"><input type="checkbox" data-f="active" ${r.active !== false ? 'checked' : ''} /> Visible on site</label>`;
+    const orderInput = r => `<div><label class="lbl">Order</label><input data-f="sort_order" type="number" class="inp" value="${esc(r.sort_order)}" /></div>`;
+    const actions = (t, id) => `<div class="flex gap-2 pt-1"><button class="btn-gold bg-gold-gradient" onclick="saveRow('${t}',${id})">Save</button><button class="btn-danger" onclick="deleteRow('${t}',${id})">Delete</button></div>`;
+    function renderList(t) {
+      const rows = DATA[t];
+      let html = '';
+      if (t === 'proof_gallery') html = rows.map(r => `<div class="card p-4 space-y-3 bg-obsidian" data-row="${r.id}">
+          <img src="${esc(r.image_url)}" class="w-full aspect-[16/11] object-cover rounded-xl border border-white/10 bg-black" alt="" />
+          <input type="file" accept="image/*" class="text-xs" onchange="uploadRowImage(event,${r.id})" />
+          <div><label class="lbl">Title</label><input data-f="title" class="inp" value="${esc(r.title)}" /></div>
+          <div class="grid grid-cols-2 gap-2"><div><label class="lbl">Amount badge</label><input data-f="amount" class="inp" value="${esc(r.amount)}" /></div>
+          <div><label class="lbl">Category</label><select data-f="category" class="inp">${CATEGORIES.map(c => `<option ${c === r.category ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></div></div>
+          <div><label class="lbl">Subtitle</label><input data-f="client" class="inp" value="${esc(r.client)}" /></div>
+          <div class="grid grid-cols-2 gap-2 items-end">${orderInput(r)}${activeToggle(r)}</div>${actions(t, r.id)}</div>`).join('');
+      if (t === 'client_reviews') html = rows.map(r => `<div class="card p-4 space-y-3 bg-obsidian" data-row="${r.id}">
+          <div class="grid grid-cols-2 gap-2"><div><label class="lbl">Client name</label><input data-f="name" class="inp" value="${esc(r.name)}" /></div>
+          <div><label class="lbl">Business</label><input data-f="business" class="inp" value="${esc(r.business)}" /></div></div>
+          <div class="grid grid-cols-2 gap-2"><div><label class="lbl">Funded badge</label><input data-f="amount" class="inp" value="${esc(r.amount)}" /></div>
+          <div><label class="lbl">Stars</label><select data-f="stars" class="inp">${[5, 4, 3, 2, 1].map(n => `<option value="${n}" ${n === r.stars ? 'selected' : ''}>${'★'.repeat(n)}</option>`).join('')}</select></div></div>
+          <div><label class="lbl">Testimonial</label><textarea data-f="text" rows="3" class="inp">${esc(r.text)}</textarea></div>
+          <div class="grid grid-cols-2 gap-2 items-end">${orderInput(r)}${activeToggle(r)}</div>${actions(t, r.id)}</div>`).join('');
+      if (t === 'faqs') html = rows.map(r => `<div class="card p-4 space-y-3 bg-obsidian" data-row="${r.id}">
+          <div><label class="lbl">Question</label><input data-f="question" class="inp" value="${esc(r.question)}" /></div>
+          <div><label class="lbl">Answer (HTML allowed)</label><textarea data-f="answer_html" rows="4" class="inp font-mono !text-xs">${esc(r.answer_html)}</textarea></div>
+          <div class="grid grid-cols-2 gap-2 items-end max-w-md">${orderInput(r)}${activeToggle(r)}</div>${actions(t, r.id)}</div>`).join('');
+      $(LISTS[t].el).innerHTML = html || '<p class="text-xs text-zinc-500 font-mono">Nothing here yet.</p>';
+    }
+    function readRow(t, id) {
+      const box = document.querySelector(`#${LISTS[t].el} [data-row="${id}"]`); const o = {};
+      box.querySelectorAll('[data-f]').forEach(el => { const f = el.dataset.f; o[f] = el.type === 'checkbox' ? el.checked : (f === 'sort_order' || f === 'stars') ? Number(el.value) : el.value.trim(); });
+      return o;
+    }
+    async function saveRow(t, id) {
+      const { error } = await sb.from(t).update(readRow(t, id)).eq('id', id);
+      if (error) return toast(error.message, false);
+      toast('Saved — live for all visitors'); loadLists();
+    }
+    async function deleteRow(t, id) {
+      if (!confirm('Delete this item permanently? This cannot be undone.')) return;
+      const { error } = await sb.from(t).delete().eq('id', id);
+      if (error) return toast(error.message, false);
+      toast('Deleted'); loadLists();
+    }
+    async function addRow(t) {
+      const max = DATA[t].reduce((m, r) => Math.max(m, r.sort_order || 0), 0);
+      const { error } = await sb.from(t).insert({ ...LISTS[t].blank, sort_order: max + 1, active: false });
+      if (error) return toast(error.message, false);
+      toast('Added as hidden — edit it, tick "Visible on site", then Save'); loadLists();
+    }
+    async function uploadRowImage(ev, id) {
+      const file = ev.target.files[0]; if (!file) return;
+      try {
+        const url = await putFile(file, 'gallery');
+        const { error } = await sb.from('proof_gallery').update({ image_url: url }).eq('id', id);
+        if (error) throw error;
+        toast('Photo updated'); loadLists();
+      } catch (e) { toast(e.message, false); }
+    }
+
+    // ---------------- TAB 4: PIXEL TEST ----------------
+    function testPixels() {
+      window.open('index.html?gcf_test=1&utm_source=admin_test&utm_campaign=pixel_test', '_blank', 'noopener');
+      toast('Site opened in a new tab with test events — check each platform\'s test/debug view');
+      setTimeout(loadTestLog, 6000);
+    }
+    async function loadTestLog() {
+      const { data, error } = await sb.from('analytics_events').select('created_at,metadata').eq('event_name', 'TestEvent').order('created_at', { ascending: false }).limit(5);
+      if (error) return $('testLog').textContent = error.message;
+      $('testLog').innerHTML = data.length ? data.map(r => `✓ ${new Date(r.created_at).toLocaleString()}`).join('<br>') : 'No test events yet.';
+    }
+
+    boot();
+  </script>
+</body>
+</html>
