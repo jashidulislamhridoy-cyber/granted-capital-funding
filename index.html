@@ -1284,10 +1284,6 @@
 
       <!-- Legal & CROA Compliance Notice -->
       <div class="pt-8 space-y-3 text-xs text-zinc-500">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>© <span id="currentYear"></span> Granted Capital Funding • By Aaron Lee Enterprises. All rights reserved.</div>
-          <div class="font-mono text-zinc-400">CROA Compliant · 256-Bit SSL Encrypted</div>
-        </div>
         <p id="footerDisclosure" class="text-[11px] leading-relaxed text-zinc-500 border-t border-white/5 pt-3">
           <strong class="text-zinc-400">CROA &amp; Regulatory Disclosure:</strong> Granted Capital Funding (by Aaron Lee Enterprises, formerly Guaranteed Capital &amp; Credit) operates as a credit services organization subject to the Credit Repair Organizations Act (CROA). You have the right to dispute inaccurate information in your credit report directly with consumer reporting agencies at no charge. Granted Capital Funding is not a direct bank or financial lender; all 0% APR corporate funding ($50,000–$150,000+ for 12–18 months) is subject to third-party bank underwriting, personal credit profile (680+ FICO), and active US LLC standing. <strong class="text-zinc-400">Affiliate Disclosure:</strong> Granted Capital Funding may earn a commission when you sign up for MyScoreIQ through our links, at no additional cost to you.
         </p>
@@ -2391,15 +2387,8 @@
     // 11. TEST MODE (admin "Test Fire Pixel Events" opens ?gcf_test=1)
     // =====================================================================
     function runPixelTest() {
+      // Fires the TestEvent silently. The on-screen "PIXEL TEST FIRED" toast was removed.
       trackEvent('TestEvent', { test: true, at: new Date().toISOString() });
-      const on = Object.entries(PIXELS).filter(([, v]) => v).map(([k]) => k);
-      const box = document.createElement('div');
-      box.className = 'fixed bottom-4 right-4 z-[60] max-w-sm p-4 rounded-2xl bg-obsidian border border-gold/50 shadow-gold-glow text-xs font-mono text-zinc-200';
-      box.innerHTML = `<div class="text-gold-light font-bold mb-1">PIXEL TEST FIRED</div>
-        <div>Active: ${on.length ? on.join(', ') : 'none — add IDs in Admin › Tracking'}</div>
-        <div class="mt-1 text-zinc-400">Check Meta Events Manager › Test Events, GA4 DebugView, Google Tag Assistant and TikTok Events Manager.</div>
-        <button class="mt-2 text-gold underline" onclick="this.parentElement.remove()">Close</button>`;
-      document.body.appendChild(box);
     }
 
     // =====================================================================
